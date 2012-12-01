@@ -37,8 +37,8 @@
  *
  * This can be set to anything, but default usage is:
  *
- *     development
- *     testing
+ *     laptop_development
+ *     desktop_development
  *     production
  *
  * NOTE: If you change these, also change the error_reporting() code below

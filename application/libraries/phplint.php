@@ -33,20 +33,27 @@ class PHPLint{
 	* @param string $php Path to php binary to use
 	*
 	*/
-	public function __construct($php = null){
+	public function __construct(){
 	
 		$this->_CI =& get_instance();
+		
+		$this->init_binary(false);
+		
+	}
 	
-		if (!is_null($php) && (!file_exists($php) || !is_executable($php))) {
+	public function init_binary($php_binary = false){
+	
+		if (!empty($php_binary) && (!file_exists($php_binary) || !is_executable($php_binary))) {
 		
 			show_error('Specified PHP binary is not valid. Check if it is the right path.', 500);
 			
 		}
 		
-		$this->_php_binary = $php ? $php : $this->_find_binary();
-		
+		$this->_php_binary = $php_binary ? $php_binary : $this->_find_binary();
+	
 	}
-
+	
+	//will try to find binary for unix, or some default position for windows
 	private function _find_binary() {
 	
 		if (stripos(PHP_OS, 'win') !== false) {
@@ -56,7 +63,16 @@ class PHPLint{
 		} else {
 		
 			//this will work on unix computers, but points to the directory, not php.exe
-			return trim(shell_exec('which php'));
+			$php_binary = trim(shell_exec('which php'));
+			if(!empty($php_binary)){
+			
+				return $php_binary;
+			
+			}else{
+				
+				show_error('PHP cannot find PHP Binary... sorry.', 500);
+				
+			}
 			
 		}
 		

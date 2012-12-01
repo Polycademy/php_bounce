@@ -13,12 +13,32 @@ class Home extends CI_Controller {
 
 	public function index(){
 	
-$test = $this->phplint->lint_string('<?php echo "lol"; ?>');
-var_dump($test);
-$parse_error = $this->phplint->get_parse_error();
-echo '<pre>';
-var_dump($parse_error);
-echo '</pre>';
+		//MAKE SURE TO CHANGE THE PHP BINARY FOR the DESKTOP DEVELOPMENT WHEN CHANGING...
+		#var_dump($this->config->item('php_binary'));
+		$this->phplint->init_binary($this->config->item('php_binary'));
+		
+		//always begin with <?php code
+		//only allows php code
+		//ALSO this only tests code which has <?php on top of it.
+		//we shall assume that the text input has no <?php
+		//there for, you should always add <?php in front of it
+		$test_code = '';
+		
+		
+		$lint_checked_code = $this->phplint->lint_string($test_code); // false or true
+		$syntax_error = $this->phplint->get_parse_error(); //gives error type and also error number line which works
+		
+		//need to test multiline
+		
+		var_dump($lint_checked_code);
+		echo '<pre>';
+		var_dump($syntax_error);
+		echo '</pre>';
+
+
+		if(ENVIRONMENT == 'development'){
+		
+		}
 		
 		$this->_view_data += array(
 			'page_title'	=> $this->config->item('site_name', 'php_bounce'),
