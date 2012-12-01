@@ -26,6 +26,13 @@ class PHPLint{
 	* @var parseError
 	*/
 	protected $_error;
+	
+	/**
+	* OS, Windows or Unix
+	*
+	* @var parseError
+	*/
+	protected $_operating_system;
 
 	/**
 	* PHPLint Constructor method
@@ -39,9 +46,21 @@ class PHPLint{
 		
 		$this->init_binary(false);
 		
+		#var_dump('lol');
+		
 	}
 	
 	public function init_binary($php_binary = false){
+	
+		if(stripos(PHP_OS, 'win') !== false){
+		
+			$this->_operating_system = 'WIN';
+			
+		}else{
+		
+			$this->_operating_system = 'UNIX';
+		
+		}
 	
 		if (!empty($php_binary) && (!file_exists($php_binary) || !is_executable($php_binary))) {
 		
@@ -56,14 +75,20 @@ class PHPLint{
 	//will try to find binary for unix, or some default position for windows
 	private function _find_binary() {
 	
-		if (stripos(PHP_OS, 'win') !== false) {
+		#var_dump($this->_operating_system);
+	
+		if ($this->_operating_system == 'WIN') {
 		
 			return 'c:\wamp\bin\php\php5.3.0\php.exe';
 			
-		} else {
+		}else{
 		
-			//this will work on unix computers, but points to the directory, not php.exe
+			//this will work on unix computers
 			$php_binary = trim(shell_exec('which php'));
+			
+			#var_dump($php_binary);
+			
+			#exit();
 			if(!empty($php_binary)){
 			
 				return $php_binary;
@@ -142,6 +167,7 @@ class PHPLint{
 		//scoop out the output
 		$stdout = stream_get_contents($pipes[1]);
 		fclose($pipes[1]);
+		//the stdout will actually be different for Windows or Unix, best not to rely on it
 		
 		//oh no errors?
 		$stderr = stream_get_contents($pipes[2]);
@@ -149,15 +175,16 @@ class PHPLint{
 		
 		$return_value = proc_close($process);
 		
-		var_dump($return_value);
-		var_dump($stdout);
+		#var_dump($return_value);
+		#var_dump($stdout);
 		
 		//if we get an error
-		if($return_value == -1) {
-		
+		//On windows computers, return_value will be -1 on error, on UNIX, 255 on error
+		if(($this->_operating_system == 'WIN' AND $return_value == -1) OR ($this->_operating_system == 'UNIX' && $return_value == 255)){
+			
 			$this->_error = $this->_parse_error($stderr, $fname);
 			return false;
-		
+			
 		}
 		
 		//yes no errors! syntax is all good
