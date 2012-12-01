@@ -79,7 +79,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'email', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('firephp');
+$autoload['libraries'] = array('firephp', 'phplint');
 
 
 /*

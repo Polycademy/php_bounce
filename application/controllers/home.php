@@ -1,5 +1,4 @@
-<?php
-defined('BASEPATH') OR exit('No direct script access allowed');
+<?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Home extends CI_Controller {
 
@@ -13,6 +12,13 @@ class Home extends CI_Controller {
 	}
 
 	public function index(){
+	
+$test = $this->phplint->lint_string('<?php echo "lol"; ?>');
+var_dump($test);
+$parse_error = $this->phplint->get_parse_error();
+echo '<pre>';
+var_dump($parse_error);
+echo '</pre>';
 		
 		$this->_view_data += array(
 			'page_title'	=> $this->config->item('site_name', 'php_bounce'),
