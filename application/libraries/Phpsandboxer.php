@@ -294,9 +294,9 @@ class Phpsandboxer{
 		
 	}
 	
-	//gets seconds.microseconds
+	//gets it in seconds
 	public function get_time_span(){
-		return $this->_run_start_time - $this->_run_end_time;
+		return round($this->_run_end_time - $this->_run_start_time, 5);
 	}
 	
 	protected function _time_stamp(){
