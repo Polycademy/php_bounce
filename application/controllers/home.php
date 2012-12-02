@@ -12,10 +12,10 @@ class Home extends CI_Controller {
 	}
 	
 	//TODO:
+	//Test in Appfog, check the filename
 	//Need to pass the correct filename to fname in execute_code() (MAKE SURE TO CHECK WHAT IT IS FOR APPFOG)
-	//Add in more error parsing regexes, because when they enter in a disabled function it goes like PHP Warning:  php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2 Warning: php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2
-	//Put the ENV vars into the right place, some of them should be in $_SERVER
 	//ADD IN open_basedir restriction!!
+	//Add in more error parsing regexes, because when they enter in a disabled function it goes like PHP Warning:  php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2 Warning: php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2
 	//TEST MALICIOUS CODE
 	public function index(){
 	
@@ -66,7 +66,7 @@ class Home extends CI_Controller {
 		//time to execute
 		$sandbox_options = array(
 			#'chroot'			=> '/',
-			'display_errors'	=> 'stderr',
+			'display_errors'	=> 'on',
 			'directory_protection'	=> array(), //array of paths to be restricted by open_basedir
 		);
 		$this->phpsandboxer->init_options($sandbox_options);

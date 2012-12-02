@@ -2,6 +2,15 @@
 
 /**
 * Sandbox environment for evaluating php
+	//to use this library
+	//call init_binary
+	//call init_env
+	//call init_options (optional)
+	//call enable_function (optional)
+	//call build_cli_options
+	//call execute_code
+	//call execution_time
+	//call errors...
 */
 class Phpsandboxer{
 
@@ -14,10 +23,10 @@ class Phpsandboxer{
 	protected $_options = array(
 		#'chroot'				=> '/', //NO CHROOT because I don't know what it really does
 		'directory_protection'	=> array(),
-		'display_errors'		=> 'on', //change to stderr to see what will happen
+		'display_errors'		=> 'on', //don't use stderr, as it will repeat the error
 		'auto_prepend_file'		=> false,
-		'max_execution_time'	=> 1, //reduce on execution
-		'memory_limit'			=> '2M', //reduce on memory allowed
+		'max_execution_time'	=> 1,
+		'memory_limit'			=> '2M',
 		'upload_max_filesize'	=> '0M',
 		'file_uploads'			=> 'off',
 		'allow_url_fopen'		=> 'off',
@@ -40,15 +49,6 @@ class Phpsandboxer{
 	//CI super object
 	protected $_CI;
 
-	//to use this library
-	//call init_binary
-	//call init_env
-	//call init_options (optional)
-	//call enable_function (optional)
-	//call build_cli_options
-	//call execute_code
-	//call execution_time
-	//call errors...
 	public function __construct(){
 	
 		$this->_CI =& get_instance();
@@ -174,11 +174,8 @@ class Phpsandboxer{
 		}
 		//open_basedir
 		#need to test where this should be?
-		#prepend file yes.. but what about the executionn of testcode
-		#need to test proc_open first
 		#directory protection has to be an array
 		#the array is basically, the list of file paths
-		
 		if(!empty($this->_options['directory_protection'])){
 			#build the directory protection via open_basedir
 			#include executed code location (possibly the library, possibly controller)
@@ -192,8 +189,6 @@ class Phpsandboxer{
 		
 		//trim off total whitespace on edges
 		$this->_cli_options = trim($this->_cli_options);
-		
-		#var_dump($this->_cli_options);
 	
 	}
 	
