@@ -176,11 +176,41 @@ class Phpsandboxer{
 		#need to test where this should be?
 		#directory protection has to be an array
 		#the array is basically, the list of file paths
-		if(!empty($this->_options['directory_protection'])){
-			#build the directory protection via open_basedir
-			#include executed code location (possibly the library, possibly controller)
-			#include prepended file
-			#cascading order
+		#build the directory protection via open_basedir
+		#include executed code location (possibly the library, possibly controller)
+		#include prepended file
+		#cascading order
+		if(!empty($this->_options['directory_protection']) AND is_array($this->_options['directory_protection'])){
+		
+			//determine the dir separator for open_basedir
+			if($this->_operating_system == 'WIN'){
+				$open_basedir_separator = ';';
+			}else{
+				$open_basedir_separator = ':';
+			}
+			
+			//all directory paths should end in a slash unless it is a file name...
+			foreach($this->_options['directory_protection'] as $key => $dir){
+				//if dir does not end in '/' AND the file extension is not php then add a DIRECTORY_SEPARATOR
+				//without this, the dir would become a prefix
+				if(substr($dir, -1) != DIRECTORY_SEPARATOR AND pathinfo($dir, PATHINFO_EXTENSION) != 'php'){
+					$this->_options['directory_protection'][$key] = $dir . DIRECTORY_SEPARATOR;
+				}
+			}
+			
+			$open_basedir_str = implode($open_basedir_separator, $this->_options['directory_protection']);
+			
+			
+			echo '<pre><h2>DIRECTORY PROTECTION PATHS</h2>';
+			var_dump($this->_options['directory_protection']);
+			echo '</pre>';
+			echo '<pre><h2>DIRECTORY PROTECTION STR</h2>';
+			var_dump($open_basedir_str);
+			echo '</pre>';
+			
+			
+			$this->_cli_options .= '-d open_basedir="' . $open_basedir_str . '" ';
+			
 		}
 		
 		//chroot (should be based on filepath to the execution environment...) maybe not needed?
