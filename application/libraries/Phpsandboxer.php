@@ -197,7 +197,7 @@ class Phpsandboxer{
 	
 	}
 	
-	public function execute_code($code){
+	public function execute_code($code, $fname = false){
 	
 		if(empty($code)){
 			return false;
@@ -207,7 +207,7 @@ class Phpsandboxer{
 		}
 		$this->_code = $code;
 		
-		#$response = shell_exec("$this->cli_command $this->cli_options " . $this->enhancedProtection($chroot) . " -d chroot=\"$chroot\" -f $path " . $this->buildVars($pass_through_vars));
+		//$response = shell_exec("$this->cli_command $this->cli_options " . $this->enhancedProtection($chroot) . " -d chroot=\"$chroot\" -f $path " . $this->buildVars($pass_through_vars));
 		
 		//0 is stdin, 1 is stdout, 2 is stderr
 		$descriptorspec = array(
@@ -219,59 +219,52 @@ class Phpsandboxer{
 		//start the race
 		$this->_run_start_time = $this->_time_stamp();
 		
-		#echo '<pre>';
-		#var_dump($this->_php_binary . ' ' . $this->_cli_options);
-		#echo '</pre>';
+		//GOGOGOGO!
+		$process = proc_open($this->_php_binary . ' ' . $this->_cli_options, $descriptorspec, $pipes);
 		
-			//GOGOGOGO!
-			
-			$process = proc_open($this->_php_binary . ' ' . $this->_cli_options, $descriptorspec, $pipes);
-			#$process = proc_open($this->_php_binary, $descriptorspec, $pipes);
-			
-			if(!is_resource($process)){
-				show_error('Could not open PHP Binary for execution');
-			}
-			
-			//pump in the code!
-			fwrite($pipes[0], $code);
-			fclose($pipes[0]);
-			
-			//scoop out the output
-			$stdout = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
-			//the stdout will actually be different for Windows or Unix, best not to rely on it
-			
-			//oh no errors?
-			$stderr = stream_get_contents($pipes[2]);
-			fclose($pipes[2]);
+		if(!is_resource($process)){
+			show_error('Could not open PHP Binary for execution of code', 500);
+		}
 		
-			$return_value = proc_close($process);
-			
-		#var_dump($stdin);
-		echo '<pre><h2>STDOUT</h2>';
+		//pump in the code!
+		fwrite($pipes[0], $code);
+		fclose($pipes[0]);
+		
+		//scoop out the output
+		$stdout = stream_get_contents($pipes[1]);
+		fclose($pipes[1]);
+		//the stdout will actually be different for Windows or Unix, best not to rely on it
+		
+		//oh no errors?
+		$stderr = stream_get_contents($pipes[2]);
+		fclose($pipes[2]);
+	
+		$return_value = proc_close($process);
+		
+		echo '<pre><h2>CLI ARGUMENTS</h2>';
+		var_dump($this->_php_binary . ' ' . $this->_cli_options);
+		echo '</pre>';
+		echo '<pre><h2>STDOUT FROM EXECUTION</h2>';
 		var_dump($stdout);
 		echo '</pre>';
-		echo '<pre><h2>STDERR</h2>';
+		echo '<pre><h2>STDERR FROM EXECUTION</h2>';
 		var_dump($stderr);
 		echo '</pre>';
-		echo '<pre><h2>RETURN_VALUE</h2>';
+		echo '<pre><h2>RETURN_VALUE FROM EXECUTION</h2>';
 		var_dump($return_value);
 		echo '</pre>';
-		var_dump(htmlentities($code));
 		
 		//finish the race
 		$this->_run_end_time = $this->_time_stamp();
 		
 		//if we get an error
 		//On windows computers, return_value will be -1 on error, on UNIX, 255 on error
-		/*
-		if(($this->_operating_system == 'WIN' AND $return_value == -1) OR ($this->_operating_system == 'UNIX' && $return_value == 255)){
+		if($return_value == -1 OR $return_value == 255){
 			
 			$this->_error = $this->_parse_error($stderr, $fname);
 			return false;
 			
 		}
-		*/
 		
 		//yes no errors! syntax is all good
 		$this->_error = null;
@@ -299,6 +292,12 @@ class Phpsandboxer{
 		
 		return $error_properties;
 	
+	}
+	
+	public function get_parse_error() {
+	
+		return $this->_error;
+		
 	}
 	
 	//gets seconds.microseconds

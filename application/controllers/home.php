@@ -25,27 +25,34 @@ class Home extends CI_Controller {
 		APPARENTLY, WHITELIST DOES NOT WORK ON THIS
 		*/
 		
-		$test_code = 'echo \'ll\';';
+		$test_code = '
+		echo \'ll\';
+		
+		
+		
+		BNMDFDOSG(I';
 		
 		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
 		//MAKE SURE TO CHANGE THE PHP BINARY FOR the DESKTOP DEVELOPMENT WHEN CHANGING...
 		if(!preg_match('/\A^(<\?|<\?php)(\s)+?/m', $test_code)){
-			$lint_code = '<?php ' . $test_code;
+			$test_code = '<?php ' . $test_code;
 		}else{
-			$lint_code = $test_code;
+			$test_code = $test_code;
 		}
 		
 		//Remember to htmlentities the code when it is being displayed back into the browser's textarea or whatever
-		echo '<pre>';
-		var_dump(htmlentities($lint_code));
+		echo '<pre><h2>CODE</h2>';
+		var_dump(htmlentities($test_code));
 		echo '</pre>';
 		
 		$this->phplint->init_binary($this->config->item('php_binary'));
-		$lint_checked_code = $this->phplint->lint_string($lint_code); // false or true
+		$lint_checked_code = $this->phplint->lint_string($test_code); // false or true
 		$syntax_error = $this->phplint->get_parse_error(); //gives error type and also error number line which works
 		
+		echo '<pre><h2>LINT CHECKED CODE</h2>';
 		var_dump($lint_checked_code);
-		echo '<pre>';
+		echo '</pre>';
+		echo '<pre><h2>SYNTAX ERROR</h2>';
 		var_dump($syntax_error);
 		echo '</pre>';
 		
@@ -62,7 +69,12 @@ class Home extends CI_Controller {
 		$this->phpsandboxer->init_binary($this->config->item('php_binary'));
 		$this->phpsandboxer->init_env(APPPATH . 'helpers' . DIRECTORY_SEPARATOR . 'phpsandbox_prepend_helper.php');
 		$this->phpsandboxer->build_cli_options();
-		$this->phpsandboxer->execute_code($lint_code); //we don't run the lint code unless we need it to, first test.
+		$this->phpsandboxer->execute_code($test_code);
+		$execution_error = $this->phpsandboxer->get_parse_error();
+		
+		echo '<pre><h2>EXECUTION ERROR</h2>';
+		var_dump($execution_error);
+		echo '</pre>';
 		
 		$this->_view_data += array(
 			'page_title'	=> $this->config->item('site_name', 'php_bounce'),
