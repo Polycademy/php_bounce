@@ -65,8 +65,6 @@ class Home extends CI_Controller {
 		
 		//time to execute
 		$sandbox_options = array(
-			#'chroot'			=> '/',
-			'display_errors'	=> 'on',
 			'directory_protection'	=> array(), //array of paths to be restricted by open_basedir
 		);
 		$this->phpsandboxer->init_options($sandbox_options);
@@ -75,9 +73,13 @@ class Home extends CI_Controller {
 		$this->phpsandboxer->build_cli_options();
 		$this->phpsandboxer->execute_code($test_code);
 		$execution_error = $this->phpsandboxer->get_parse_error();
+		$time_span = $this->phpsandboxer->get_time_span();
 		
 		echo '<pre><h2>EXECUTION ERROR</h2>';
 		var_dump($execution_error);
+		echo '</pre>';
+		echo '<pre><h2>EXECUTION TIME</h2>';
+		var_dump($time_span);
 		echo '</pre>';
 		
 		$this->_view_data += array(
