@@ -46,8 +46,6 @@ class PHPLint{
 		
 		$this->init_binary(false);
 		
-		#var_dump('lol');
-		
 	}
 	
 	public function init_binary($php_binary = false){

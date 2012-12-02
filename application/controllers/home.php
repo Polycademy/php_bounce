@@ -26,16 +26,22 @@ class Home extends CI_Controller {
 		echo \'ll\'
 		';
 		
-		
 		$lint_checked_code = $this->phplint->lint_string($test_code); // false or true
 		$syntax_error = $this->phplint->get_parse_error(); //gives error type and also error number line which works
-		
-		//need to test multiline
 		
 		var_dump($lint_checked_code);
 		echo '<pre>';
 		var_dump($syntax_error);
 		echo '</pre>';
+		
+		//placeholder for phpparse and correction
+		
+		
+		//time to execute
+		$this->phpsandbox->init_binary($this->config->item('php_binary'));
+		$this->phpsandbox->init_env('phpsandbox_prepend_helper');
+		
+		
 		
 		$this->_view_data += array(
 			'page_title'	=> $this->config->item('site_name', 'php_bounce'),

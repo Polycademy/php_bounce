@@ -1,8 +1,8 @@
 #FOR SECURITY REASONS
 php_value upload_max_filesize 0M
-php_value max_execution_time 3
-php_value max_input_time 3
-php_value memory_limit 4M
+php_value max_execution_time 4
+php_value max_input_time 4
+php_value memory_limit 5M
 php_value post_max_size 1M
 
 # Apache configuration file
