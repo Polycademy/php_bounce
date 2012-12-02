@@ -84,9 +84,6 @@ class Phplint{
 			//this will work on unix computers
 			$php_binary = trim(shell_exec('which php'));
 			
-			#var_dump($php_binary);
-			
-			#exit();
 			if(!empty($php_binary)){
 			
 				return $php_binary;
@@ -138,7 +135,7 @@ class Phplint{
 	*
 	* @return boolean  True for no lint errors, false otherwise
 	*/
-	public function lint_string($code, $fname = null) {
+	public function lint_string($code, $fname = false) {
 
 		if(empty($code)){
 			return false;
@@ -201,10 +198,10 @@ class Phplint{
 	/**
 	* parse_error
 	*
-	* @param string $errorLine  Unparsed PHP -l output line
+	* @param string $error_line  Unparsed PHP -l output line
 	* @param string $fname      Overwrite filename from output with this filename
 	*/
-	protected function _parse_error($error_line, $fname = null){
+	protected function _parse_error($error_line, $fname = false){
 		
 		preg_match('/^(.*):(.*) in (.*) on line (.*[0-9])/u', $error_line, $matches);
 		
@@ -212,7 +209,7 @@ class Phplint{
 			'raw'		=> trim($error_line),
 			'type'		=> $matches[1],
 			'message'	=> trim($matches[2]),
-			'file'		=> $fname !== null ? $fname : $matches[3],
+			'file'		=> (!empty($fname)) ? $fname : $matches[3],
 			'line'		=> $matches[4],
 		);
 		

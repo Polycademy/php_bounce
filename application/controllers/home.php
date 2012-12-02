@@ -31,7 +31,7 @@ class Home extends CI_Controller {
 		
 		$test_code = 'echo \'lol\';
 		var_dump(php_uname(\'n\'));
-		var_dump($_ENV);
+		var_dump($_ENV);dfgh
 		var_dump($_SERVER);
 		
 		getenv(\'SERVER_NAME\');';
@@ -50,7 +50,7 @@ class Home extends CI_Controller {
 		echo '</pre>';
 		
 		$this->phplint->init_binary($this->config->item('php_binary'));
-		$lint_checked_code = $this->phplint->lint_string($test_code); // false or true
+		$lint_checked_code = $this->phplint->lint_string($test_code, 'PHP Bounce'); // false or true
 		$syntax_error = $this->phplint->get_parse_error(); //gives error type and also error number line which works
 		
 		echo '<pre><h2>LINT CHECKED CODE</h2>';
@@ -71,7 +71,7 @@ class Home extends CI_Controller {
 		$this->phpsandboxer->init_binary($this->config->item('php_binary'));
 		$this->phpsandboxer->init_env(APPPATH . 'helpers' . DIRECTORY_SEPARATOR . 'phpsandbox_prepend_helper.php');
 		$this->phpsandboxer->build_cli_options();
-		$this->phpsandboxer->execute_code($test_code);
+		$this->phpsandboxer->execute_code($test_code, 'PHP Bounce');
 		$execution_error = $this->phpsandboxer->get_parse_error();
 		$time_span = $this->phpsandboxer->get_time_span();
 		

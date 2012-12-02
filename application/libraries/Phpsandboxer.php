@@ -269,10 +269,10 @@ class Phpsandboxer{
 	/**
 	* parse_error
 	*
-	* @param string $errorLine  Unparsed PHP -l output line
+	* @param string $error_line
 	* @param string $fname      Overwrite filename from output with this filename
 	*/
-	protected function _parse_error($error_line, $fname = null){
+	protected function _parse_error($error_line, $fname = false){
 		
 		preg_match('/^(.*):(.*) in (.*) on line (.*[0-9])/u', $error_line, $matches);
 		
@@ -280,7 +280,7 @@ class Phpsandboxer{
 			'raw'		=> trim($error_line),
 			'type'		=> $matches[1],
 			'message'	=> trim($matches[2]),
-			'file'		=> $fname !== null ? $fname : $matches[3],
+			'file'		=> (!empty($fname)) ? $fname : $matches[3],
 			'line'		=> $matches[4],
 		);
 		
