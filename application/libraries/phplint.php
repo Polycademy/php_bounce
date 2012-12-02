@@ -18,7 +18,7 @@ class Phplint{
 	*
 	* @var string
 	*/
-	protected $_php_binary;
+	protected $_php_binary = 'php';
 
 	/**
 	* Reference to parseError object in case of lint error
@@ -42,9 +42,7 @@ class Phplint{
 	*/
 	public function __construct(){
 	
-		$this->_CI =& get_instance();
-		
-		$this->init_binary(false);
+		$this->_CI =& get_instance();		
 		
 	}
 	
