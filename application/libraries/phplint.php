@@ -185,7 +185,7 @@ class Phplint{
 		
 		//if we get an error
 		//On windows computers, return_value will be -1 on error, on UNIX, 255 on error
-		if(($this->_operating_system == 'WIN' AND $return_value == -1) OR ($this->_operating_system == 'UNIX' && $return_value == 255)){
+		if($return_value == -1 OR $return_value == 255){
 			
 			$this->_error = $this->_parse_error($stderr, $fname);
 			return false;

@@ -235,6 +235,9 @@ class Phpsandboxer{
 	
 		$return_value = proc_close($process);
 		
+		//finish the race
+		$this->_run_end_time = $this->_time_stamp();
+		
 		echo '<pre><h2>CLI ARGUMENTS</h2>';
 		var_dump($this->_php_binary . ' ' . $this->_cli_options);
 		echo '</pre>';
@@ -247,9 +250,6 @@ class Phpsandboxer{
 		echo '<pre><h2>RETURN_VALUE FROM EXECUTION</h2>';
 		var_dump($return_value);
 		echo '</pre>';
-		
-		//finish the race
-		$this->_run_end_time = $this->_time_stamp();
 		
 		//if we get an error
 		//On windows computers, return_value will be -1 on error, on UNIX, 255 on error
