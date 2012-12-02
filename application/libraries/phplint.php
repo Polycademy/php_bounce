@@ -4,7 +4,7 @@
 * Helper class to run a lint check on php code and get possible errors in useable form
 * Use lint_file or lint_string and then get_parse_error
 */
-class PHPLint{
+class Phplint{
 
 	/**
 	* CI Super object
