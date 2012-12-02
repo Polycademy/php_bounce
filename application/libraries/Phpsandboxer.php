@@ -21,7 +21,7 @@ class Phpsandboxer{
 		'upload_max_filesize'	=> '0M',
 		'file_uploads'			=> 'off',
 		'allow_url_fopen'		=> 'off',
-		'disable_functions'		=> 'apache_child_terminate,apache_setenv,assert_options,chdir,chgrp,chmod,chown,closedir,copy,dbase_open,define_syslog_variables,dl,escapeshellarg,escapeshellcmd,exec,curl_exec,curl_multi_exec,curl_multi_init,curl_init,parse_ini_file,show_source,pcntl_fork,pcntl_exec,phpinfo,ini_set,include,require,include_once,require_once,file,file_exists,file_get_contents,finfo_file,finfo_open,fopen,fp,fpassthru,fput,fputcsv,fputs,fread,ftp_connect,ftp_exec,ftp_get,ftp_login,ftp_nb_fput,ftp_put,ftp_raw,ftp_rawlist,ftruncate,fwrite,getcwd,getopt,header,highlight_file,ini_alter,ini_get,ini_get_all,ini_restore,link,mail,mkdir,move_uploaded_file,mysql_connect,mysql_pconnect,mysqli_connect,opendir,openlog,passthru,pathinfo,php_uname,phpversion,popen,posix_getpwuid,posix_kill,posix_mkfifo,posix_setpgid,posix_setsid,posix_setuid,posix_uname,proc_close,proc_get_status,proc_nice,proc_open,proc_terminate,putenv,readdir,readfile,readlink,rename,restore_include_path,rewinddir,rmdir,scandir,session_start,set_include_path,set_magic_quotes_runtime,set_time_limit,shell_exec,symlink,assert,create_function,file_put_contents,sys_get_temp_dir,syslog,system,tempnam,tmpfile,unlink,xmlrpc_entity_decode,zend_version,imap_mail,imap_open,dbmopen,filepro,filepro_rowcount,filepro_retrieve,apache_request_headers,posix_getlogin,posix_ttyname,get_current_user,get_cfg_var,getlastmo,getmypid,extract,parse_str,pfsockopen,fsockopen,preg_replace,bzopen,gzopen,ftp_nb_get,imagepng,imagewbmp,image2wbmp,imagejpeg,imagexbm,imagegif,imagegd,imagegd2,iptcembed,gzfile,readgzfile,imagecreatefromgif,imagecreatefromjpeg,imagecreatefrompng,imagecreatefromwbmp,imagecreatefromxbm,imagecreatefromxpm,exif_read_data,read_exif_data,pcntl_signal,pcntl_alarm,register_tick_function,register_shutdown_function,chroot,dir',
+		'disable_functions'		=> 'apache_child_terminate,apache_setenv,assert_options,chdir,chgrp,chmod,chown,closedir,copy,dbase_open,define_syslog_variables,dl,escapeshellarg,escapeshellcmd,exec,curl_exec,curl_multi_exec,curl_multi_init,curl_init,parse_ini_file,show_source,pcntl_fork,pcntl_exec,phpinfo,ini_set,include,require,include_once,require_once,file,file_exists,file_get_contents,finfo_file,finfo_open,fopen,fp,fpassthru,fput,fputcsv,fputs,fread,ftp_connect,ftp_exec,ftp_get,ftp_login,ftp_nb_fput,ftp_put,ftp_raw,ftp_rawlist,ftruncate,fwrite,getcwd,getopt,header,highlight_file,ini_alter,ini_get,ini_get_all,ini_restore,link,mail,mkdir,move_uploaded_file,mysql_connect,mysql_pconnect,mysqli_connect,opendir,openlog,passthru,pathinfo,php_uname,phpversion,popen,posix_getpwuid,posix_kill,posix_mkfifo,posix_setpgid,posix_setsid,posix_setuid,posix_uname,proc_close,proc_get_status,proc_nice,proc_open,proc_terminate,putenv,readdir,readfile,readlink,rename,restore_include_path,rewinddir,rmdir,scandir,session_start,set_include_path,set_magic_quotes_runtime,set_time_limit,shell_exec,symlink,assert,create_function,file_put_contents,sys_get_temp_dir,syslog,system,tempnam,tmpfile,unlink,xmlrpc_entity_decode,zend_version,imap_mail,imap_open,dbmopen,filepro,filepro_rowcount,filepro_retrieve,apache_request_headers,posix_getlogin,posix_ttyname,get_current_user,get_cfg_var,getlastmo,getmypid,extract,parse_str,pfsockopen,fsockopen,preg_replace,bzopen,gzopen,ftp_nb_get,imagepng,imagewbmp,image2wbmp,imagejpeg,imagexbm,imagegif,imagegd,imagegd2,iptcembed,gzfile,readgzfile,imagecreatefromgif,imagecreatefromjpeg,imagecreatefrompng,imagecreatefromwbmp,imagecreatefromxbm,imagecreatefromxpm,exif_read_data,read_exif_data,pcntl_signal,pcntl_alarm,register_tick_function,register_shutdown_function,chroot,dir,php_sapi_name',
 		'disable_classes'		=> 'SplFileObject',
 	);
 	//cli options built as a string to pass into cli
@@ -207,8 +207,6 @@ class Phpsandboxer{
 		}
 		$this->_code = $code;
 		
-		//$response = shell_exec("$this->cli_command $this->cli_options " . $this->enhancedProtection($chroot) . " -d chroot=\"$chroot\" -f $path " . $this->buildVars($pass_through_vars));
-		
 		//0 is stdin, 1 is stdout, 2 is stderr
 		$descriptorspec = array(
 			0 => array("pipe", "r"),
@@ -220,6 +218,7 @@ class Phpsandboxer{
 		$this->_run_start_time = $this->_time_stamp();
 		
 		//GOGOGOGO!
+		//ITS CURRENTLY USING <?php this does not distort the lines, because it is adding on in the same line...
 		$process = proc_open($this->_php_binary . ' ' . $this->_cli_options, $descriptorspec, $pipes);
 		
 		if(!is_resource($process)){
