@@ -12,9 +12,9 @@ class Home extends CI_Controller {
 	}
 	
 	//TODO:
+	//Parse Check
 	//Add in Whitelist
 	//Add in more error parsing regexes, because when they enter in a disabled function it goes like PHP Warning:  php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2 Warning: php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2
-	//Parse Check
 	//TEST MALICIOUS CODE
 	public function index(){
 	
@@ -26,27 +26,31 @@ class Home extends CI_Controller {
 		APPARENTLY, WHITELIST DOES NOT WORK ON THIS
 		*/
 		
-		var_dump(getenv('SERVER_NAME'));
+		$test_code = ' echo \'lol\';
 		
-		$test_code = 'echo \'lol\';
 		#var_dump(php_uname(\'n\'));
 		var_dump($_ENV);
+		
 		var_dump($_SERVER);
+		
 		
 		getenv(\'SERVER_NAME\');';
 		
 		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
 		//MAKE SURE TO CHANGE THE PHP BINARY FOR the DESKTOP DEVELOPMENT WHEN CHANGING...
-		if(!preg_match('/\A^(<\?|<\?php)(\s)+?/m', $test_code)){
+		
+		//All Test Code, whether it is in phplint, phpsandboxer, phpparser, phpwhitelist will require <?php ahead of it.
+		//short open tags cannot be used here in execution, it will fail. It require <?php
+		if(!preg_match('/\A^(<\?php)(\s)+?/m', $test_code)){
 			$test_code = '<?php ' . $test_code;
 		}else{
 			$test_code = $test_code;
 		}
 		
 		//Remember to htmlentities the code when it is being displayed back into the browser's textarea or whatever
-		echo '<pre><h2>CODE</h2>';
-		var_dump(htmlentities($test_code));
-		echo '</pre>';
+		#echo '<pre><h2>CODE</h2>';
+		#var_dump(htmlentities($test_code));
+		#echo '</pre>';
 		
 		$this->phplint->init_binary($this->config->item('php_binary'));
 		$lint_checked_code = $this->phplint->lint_string($test_code, 'PHP Bounce'); // false or true
@@ -59,17 +63,63 @@ class Home extends CI_Controller {
 		var_dump($syntax_error);
 		echo '</pre>';
 		
-		//placeholder for PHP Mission CHECK
-		
 		//WHITELIST
 		
+		//PHP-Parser AKA Mission Check
+		//The whole point of this parser is to CHECK for:
+		/*
+			variable declarations
+			function declarations
+			constant declarations
+			output
+		*/
+		//Therefore each mission challenge, will have its own parameters for success
+		
+		$mission_parameters = array(
+			'variables'	=> array(
+				'VARIABLE_NAME'	=> 'VARIABLE_VALUE',
+			),
+			'functions'	=> array(
+				'FUNCTION_NAME'	=> 'FUNCTION_OUTPUT'
+			),
+			'constants'	=> array(
+				'CONSTANT_NAME'	=> 'CONSTANT_VALUE',
+			),
+		);
+		
+		//init the parser
+		$mission_parser = new PHPParser_Parser(new PHPParser_Lexer);
+		//init the visitor
+		$mission_visitor = new PHPParser_NodeTraverser;
+		//add the namespace_resolver visitor
+		$mission_visitor->addVisitor(new PHPParser_NodeVisitor_NameResolver);
+		//mission_corrector
+		$mission_visitor->addVisitor(new PHPParser_NodeVisitor_Corrector($mission_parameters));
+		
+		//init the errors, this can either be a string, or an array
+		$mission_error = false;
+		try{
+			//produce a graph for analysis
+			//AST is a abstract syntax tree the graph is an AST
+			$mission_graph = $mission_parser->parse($test_code);
+			//the mission_visitor can overwrite the mission_graph, we are not going to do that
+			//instead we are going to check based on parameters and return an array or false of mission errors including line numbers
+			$mission_error = $mission_visitor->traverse($mission_graph);
+		}catch(PHPParser_Error $e){
+			//oh no possible error
+			$mission_error = 'Parse Error: ' . $e->getMessage();
+		}
+		
+		echo '<pre><h2>MISSION GRAPH</h2>';
+		var_dump($mission_graph);
+		echo '</pre>';
 		
 		//time to execute
-		$fake_server_env_prepend_file = APPPATH . 'helpers' . DIRECTORY_SEPARATOR . 'phpsandbox_prepend_helper.php';
+		$fake_server_env_prepend_file = APPPATH . 'helpers/phpsandbox_prepend_helper.php';
 		$sandbox_options = array(
 			'directory_protection'	=> array(
-				$fake_server_env_prepend_file, //prepend file
-			), //array of paths to be restricted by open_basedir
+				$fake_server_env_prepend_file,
+			),
 		);
 		$this->phpsandboxer->init_options($sandbox_options);
 		$this->phpsandboxer->init_binary($this->config->item('php_binary'));

@@ -272,7 +272,7 @@ class Phpsandboxer{
 		var_dump($this->_php_binary . ' ' . $this->_cli_options);
 		echo '</pre>';
 		echo '<pre><h2>STDOUT FROM EXECUTION</h2>';
-		var_dump($stdout);
+		var_dump(htmlentities($stdout));
 		echo '</pre>';
 		echo '<pre><h2>STDERR FROM EXECUTION</h2>';
 		var_dump($stderr);
