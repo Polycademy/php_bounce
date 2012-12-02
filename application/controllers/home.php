@@ -29,7 +29,7 @@ class Home extends CI_Controller {
 		
 		var_dump(getenv('SERVER_NAME'));
 		
-		$test_code = '#echo \'lol\';
+		$test_code = 'echo \'lol\';
 		var_dump(php_uname(\'n\'));
 		var_dump($_ENV);
 		var_dump($_SERVER);
