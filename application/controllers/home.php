@@ -28,10 +28,6 @@ class Home extends CI_Controller {
 		*/
 		
 		$test_code = '
-		$my_name = \'Roge\' . \'Q\';
-		';
-		
-		/*
 		$my_chinese_surname = \'Qiu\';
 		$my_chinese_firstname = \'Yulong\';
 		
@@ -40,7 +36,7 @@ class Home extends CI_Controller {
 		}else{
 			return false;
 		}
-		*/
+		';
 		
 		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
 		//MAKE SURE TO CHANGE THE PHP BINARY FOR the DESKTOP DEVELOPMENT WHEN CHANGING...
@@ -74,65 +70,25 @@ class Home extends CI_Controller {
 		//WHITELIST PLACEHOLDER
 		
 		//PHP-Parser AKA Mission Check
-		//The whole point of this parser is to CHECK for:
-		/*
-			variable declarations
-			function declarations
-			constant declarations
-			output
-		*/
-		//Therefore each mission challenge, will have its own parameters for success
-		//do a fizzbuzz challenge lol
-		
-		//MISSION PARAMETERS CAN GET VERY VERY COMPLEX
-		//THESE HAS TO CORRESPOND TO THE ARRAY/OBJECT
-		//you should create a builder for this
-		//kind of like parameters for each expression/statement
-		//function $mission->parameter_expr_assign(NAME, TYPE OF VALUE, VALUES);
-		//GO FROM MISSION, then test
-		//YOU CANNOT GO FROM TEST to MISSION, there is too many possibilities...
-		//in the mission corrector, all nodes have to converted to an array...
-		$mission_parameters = array(
-		);
-		
-		//This will be matched to the returned mission errors, and a final array of error messages will be outputted
-		$mission_error_msgs = array(
-		);
+		//mission parameters correspond to the mission_graph, you're doing a loose array search
 		
 		//init the parser
-		//init the visitor pattern (because the array has protected methods)
-		//init the mission corrector as a visitor
 		$php_parser = new PHPParser_Parser(new PHPParser_Lexer);
-		//init custom traverser
-		$php_traverser = new PHPParser_CustomTraverser;		
-		
-		
-		#$visitor_pattern = new PHPParser_NodeTraverser;
-		#$mission_corrector = new PHPParser_NodeVisitor_Corrector($mission_parameters);
-		
-		//add the namespace_resolver visitor
-		//add the mission corrector as a visitor
-		#$visitor_pattern->addVisitor(new PHPParser_NodeVisitor_NameResolver);
-		#$visitor_pattern->addVisitor($mission_corrector);
-		
-		//init the errors, this can either be a string, or an array
+		//resolve namespaces (using visitor pattern)
+		$visitor_pattern = new PHPParser_NodeTraverser;
+		$visitor_pattern->addVisitor(new PHPParser_NodeVisitor_NameResolver);
+		//init custom convert traverser
+		//note that I changed NodeAbstract to have public variables
+		$php_convertor = new PHPParser_ConvertorTraverser;		
+		//produce a graph for analysis
+		//AST is a abstract syntax tree, the graph is an AST
 		$php_parser_error = false;
 		try{
-			//produce a graph for analysis
-			//AST is a abstract syntax tree the graph is an AST
 			$mission_graph = $php_parser->parse($test_code);
-			$mission_graph = $php_traverser->traverse($mission_graph);
-			
-			
-			
-			//the visitor_pattern can overwrite the mission_graph
-			//we are going to use it to overwrite the object properties as array key and values instead
-			#$mission_graph = $visitor_pattern->traverse($mission_graph);
-			
-			//PLACEHOLDER for ERROR parsing
-			
+			$mission_graph = $visitor_pattern->traverse($mission_graph);
+			$mission_graph = $php_convertor->traverse($mission_graph);
 		}catch(PHPParser_Error $e){
-			//oh no possible error
+			//oh no possible error (if there is an error, cancel the execution and send this out)
 			$php_parser_error = 'Parse Error: ' . $e->getMessage();
 		}
 		
@@ -142,9 +98,27 @@ class Home extends CI_Controller {
 		echo '<pre><h2>MISSION GRAPH</h2>';
 		var_dump ($mission_graph);
 		echo '</pre>';
-		#echo '<pre><h2>MISSION ERRORS</h2>';
-		#var_dump($mission_corrector->get_errors());
-		#echo '</pre>';
+		
+		//begin mission checking
+		
+		//$mission_parameters:
+		//ALWAYS START WITH THE ERROR INDEX (if no error, why bother checking?)
+		//THEN TREE BRANCH
+		//THEN = value
+		
+		//testing: "echo true;"
+		$mission_parameters['echo_true_check']['stmt_echo']['subnodes']['exprs'][0]['expr_constfetch']['subnodes']['name']['name']['subnodes']['parts'][0] = 'true';
+		
+		//This will be matched to the returned mission errors, and a final array of error messages will be outputted
+		$mission_error_msgs = array(
+			'echo_true_check'	=> array(
+				'missing'	=> '"echo true;" is missing',
+				'incorrect'	=> '"echo X;" is incorrect, you need need echo the boolean true!',
+			),
+		);
+		
+		$this->missionchecker->init_options($mission_graph, $mission_parameters, $mission_error_msgs);
+		$this->missionchecker->run_check();
 		
 		//time to execute
 		$fake_server_env_prepend_file = APPPATH . 'helpers/phpsandbox_prepend_helper.php';

@@ -2,8 +2,8 @@
 
 abstract class PHPParser_NodeAbstract implements PHPParser_Node, IteratorAggregate
 {
-    protected $subNodes;
-    protected $attributes;
+    public $subNodes;
+    public $attributes;
 
     /**
      * Creates a Node.
