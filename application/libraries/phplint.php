@@ -168,6 +168,7 @@ class Phplint{
 		
 		$return_value = proc_close($process);
 		
+		/*
 		echo '<pre><h2>STDOUT FROM LINT</h2>';
 		var_dump($stdout);
 		echo '</pre>';
@@ -177,6 +178,7 @@ class Phplint{
 		echo '<pre><h2>RETURN_VALUE FROM LINT</h2>';
 		var_dump($return_value);
 		echo '</pre>';
+		*/
 		
 		//if we get an error
 		//On windows computers, return_value will be -1 on error, on UNIX, 255 on error

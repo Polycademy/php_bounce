@@ -3,48 +3,87 @@
 class PHPParser_NodeVisitor_Corrector extends PHPParser_NodeVisitorAbstract{
 
 	//multidimensional array of mission parameters
-	/*
-		$mission_parameters = array(
-			'variables'	=> array(
-				'VARIABLE_NAME'	=> 'VARIABLE_VALUE',
-			),
-			'functions'	=> array(
-				'FUNCTION_NAME'	=> 'FUNCTION_OUTPUT'
-			),
-			'constants'	=> array(
-				'CONSTANT_NAME'	=> 'CONSTANT_VALUE',
-			),
-		);
-	*/
+	//this will represent a loose representation of the AST graph
 	protected $_parameters;
-	
-	//array KEY => VALUE
-	//KEY could be line number (starting)
-	//Value is the message to return
-	//It msg to return should be like
-	/*
-		Key => 'Undeclared X'
-		Key => 'Incorrect X' (incorrect output)
-		It will be difficult to test control structures.. but that's for syntax checking
-		The home.php will have their own custom error messages (friendly) to match to those
-		Perhaps if there cannot be line numbers, you can just do 'Undeclared' => X.. etc It will make it easy to do array search and replace
-	*/
-	protected $_errors = false;
+	#protected $_errors = false;
 	
 	public function __construct($parameters){
 		$this->_parameters = $parameters;
 	}
 	
+	//we are going to convert any objects to arrays here
+	//instanceof means if $node is an instantiated object of PHPParser_Node_Name
+	//PHPParser_Node_Name corresponds to PHPParser/Node/Name.php (check the lib)
     public function leaveNode(PHPParser_Node $node) {
-		//instanceof means if $node is an instantiated object of PHPParser_Node_Name
-		//PHPParser_Node_Name corresponds to PHPParser/Node/Name.php (check the lib)
+	
+		//If I return false, it removes the node
+		//If I don't return or "null" it doesn't do anything
+		//If I return a value, it replaces the node with the new value
 		
-		//IF a particular array parameter exists
-		//THEN FOREACH
-		//THEN check the node for existence + value
-		//THEN FIGURE OUT THE MESSAGE
-        if ($node instanceof PHPParser_Node_Name) {
-        }
-    }
+		//ALL NODES ARE OBJECTS.. at the start
+		
+		//GET the name of the object BEFORE you convert, you'll need it.
+		$name_of_object = get_class($node);
+		if(is_object($node)){
+			echo 'IS AN OBJECT<br />';
+		}
+		echo '<pre>';
+		var_dump($node);
+		echo '</pre>';
+		
 
+		/*
+		array_walk_recursive(
+			$a,
+			function($item, $key){
+				if(is_object( $item ) ) { 
+					$item = $item->output(); 
+				}
+			}
+		);
+		*/
+		
+		$node = $this->_object_to_array($node);
+		
+		echo '<pre>';
+		var_dump($node);
+		echo '</pre>';
+		
+		return $node;
+		
+		#if ($node instanceof PHPParser_Node_Name) {
+		#}
+		
+    }
+	
+	//recursive
+	protected function _object_to_array($obj){
+	
+		if(is_object($obj)) $obj = (array) $obj;
+		
+		if(is_array($obj)) {
+		
+			$new = array();
+			foreach($obj as $key => $val) {
+				$new[$key] = self::_object_to_array($val);
+			}
+			
+		}else{
+		
+			$new = $obj;
+		
+		}
+		
+		return $new;
+	
+	}
+	
+	//access the list of errors
+	/*
+	public function get_errors(){
+		return $this->_errors;
+	
+	}
+	*/
+	
 }

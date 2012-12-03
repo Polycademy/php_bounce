@@ -200,13 +200,14 @@ class Phpsandboxer{
 			
 			$open_basedir_str = implode($open_basedir_separator, $this->_options['directory_protection']);
 			
-			
+			/*
 			echo '<pre><h2>DIRECTORY PROTECTION PATHS</h2>';
 			var_dump($this->_options['directory_protection']);
 			echo '</pre>';
 			echo '<pre><h2>DIRECTORY PROTECTION STR</h2>';
 			var_dump($open_basedir_str);
 			echo '</pre>';
+			*/
 			
 			
 			$this->_cli_options .= '-d open_basedir="' . $open_basedir_str . '" ';
@@ -268,6 +269,7 @@ class Phpsandboxer{
 		//finish the race
 		$this->_run_end_time = $this->_time_stamp();
 		
+		/*
 		echo '<pre><h2>CLI ARGUMENTS</h2>';
 		var_dump($this->_php_binary . ' ' . $this->_cli_options);
 		echo '</pre>';
@@ -280,6 +282,7 @@ class Phpsandboxer{
 		echo '<pre><h2>RETURN_VALUE FROM EXECUTION</h2>';
 		var_dump($return_value);
 		echo '</pre>';
+		*/
 		
 		//if we get an error
 		//On windows computers, return_value will be -1 on error, on UNIX, 255 on error
