@@ -13,6 +13,7 @@ class Home extends CI_Controller {
 	
 	//TODO:
 	//Parse Check
+	//Parse Check parameters and friendly error messages
 	//Add in Whitelist
 	//Add in more error parsing regexes, because when they enter in a disabled function it goes like PHP Warning:  php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2 Warning: php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2
 	//TEST MALICIOUS CODE
@@ -63,7 +64,7 @@ class Home extends CI_Controller {
 		var_dump($syntax_error);
 		echo '</pre>';
 		
-		//WHITELIST
+		//WHITELIST PLACEHOLDER
 		
 		//PHP-Parser AKA Mission Check
 		//The whole point of this parser is to CHECK for:
@@ -74,6 +75,7 @@ class Home extends CI_Controller {
 			output
 		*/
 		//Therefore each mission challenge, will have its own parameters for success
+		//do a fizzbuzz challenge lol
 		
 		$mission_parameters = array(
 			'variables'	=> array(
@@ -85,6 +87,10 @@ class Home extends CI_Controller {
 			'constants'	=> array(
 				'CONSTANT_NAME'	=> 'CONSTANT_VALUE',
 			),
+		);
+		
+		//This will be matched to the returned mission errors, and a final array of error messages will be outputted
+		$mission_error_msgs = array(
 		);
 		
 		//init the parser
