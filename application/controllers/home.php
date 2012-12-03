@@ -28,7 +28,10 @@ class Home extends CI_Controller {
 		*/
 		
 		$test_code = '
-		$my_name = \'Roge\' . \'Q\' . \'r\' . \'lol\';
+		$my_name = \'Roge\' . \'Q\';
+		';
+		
+		/*
 		$my_chinese_surname = \'Qiu\';
 		$my_chinese_firstname = \'Yulong\';
 		
@@ -37,7 +40,7 @@ class Home extends CI_Controller {
 		}else{
 			return false;
 		}
-		';
+		*/
 		
 		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
 		//MAKE SURE TO CHANGE THE PHP BINARY FOR the DESKTOP DEVELOPMENT WHEN CHANGING...
@@ -100,13 +103,17 @@ class Home extends CI_Controller {
 		//init the visitor pattern (because the array has protected methods)
 		//init the mission corrector as a visitor
 		$php_parser = new PHPParser_Parser(new PHPParser_Lexer);
-		$visitor_pattern = new PHPParser_NodeTraverser;
-		$mission_corrector = new PHPParser_NodeVisitor_Corrector($mission_parameters);
+		//init custom traverser
+		$php_traverser = new PHPParser_CustomTraverser;		
+		
+		
+		#$visitor_pattern = new PHPParser_NodeTraverser;
+		#$mission_corrector = new PHPParser_NodeVisitor_Corrector($mission_parameters);
 		
 		//add the namespace_resolver visitor
 		//add the mission corrector as a visitor
-		$visitor_pattern->addVisitor(new PHPParser_NodeVisitor_NameResolver);
-		$visitor_pattern->addVisitor($mission_corrector);
+		#$visitor_pattern->addVisitor(new PHPParser_NodeVisitor_NameResolver);
+		#$visitor_pattern->addVisitor($mission_corrector);
 		
 		//init the errors, this can either be a string, or an array
 		$php_parser_error = false;
@@ -114,9 +121,13 @@ class Home extends CI_Controller {
 			//produce a graph for analysis
 			//AST is a abstract syntax tree the graph is an AST
 			$mission_graph = $php_parser->parse($test_code);
+			$mission_graph = $php_traverser->traverse($mission_graph);
+			
+			
+			
 			//the visitor_pattern can overwrite the mission_graph
 			//we are going to use it to overwrite the object properties as array key and values instead
-			$mission_graph = $visitor_pattern->traverse($mission_graph);
+			#$mission_graph = $visitor_pattern->traverse($mission_graph);
 			
 			//PLACEHOLDER for ERROR parsing
 			
@@ -125,9 +136,9 @@ class Home extends CI_Controller {
 			$php_parser_error = 'Parse Error: ' . $e->getMessage();
 		}
 		
-		echo '<pre><h2>PHP Parser Error</h2>';
-		var_dump ($php_parser_error);
-		echo '</pre>';
+		#echo '<pre><h2>PHP Parser Error</h2>';
+		#var_dump ($php_parser_error);
+		#echo '</pre>';
 		echo '<pre><h2>MISSION GRAPH</h2>';
 		var_dump ($mission_graph);
 		echo '</pre>';
