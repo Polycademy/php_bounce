@@ -38,21 +38,28 @@ class Missionchecker{
 		//cant use this because it lists by dimension first, also your key parameters may not be stacked in dimensional order anyway
 		#$keys_from_graph = $this->_array_key_recursive($this->_graph);
 		
-		//have to use the old fashioned method, step through all places
+		//have to use the old fashioned method, step through the graph array (while)
+		//inside the below foreach, you are going to do a while list, and go through the graph array
+		//using the keys from parameter do another foreach
+		//now you're matching the FIRST key do the ANY key in the FIRST dimension of the GRAPH array
+		//If matched, step through to the SECOND DIMENSION (then search SECOND KEY)
+		//Keep going until you have all the keys
 	
-		//first take the $this->_parameters and pop out the error_index
+		//first take the $this->_parameters and pop out the first element called the error_index
 		foreach($this->_parameters as $error_index => $parameter){
 			//$error_index should be used in case there was an error
 			//$parameter is to be matched to $this->_graph
 			
 			$keys_from_parameter = $this->_array_key_recursive($parameter);
+			//popped the last element off $keys_from_parameter and put it in value_from_parameter
+			$value_from_parameter = array_pop($keys_from_parameter);
 			
 			
 			echo '<pre>';
 			#var_dump($error_index);
-			var_dump($parameter);
-			#var_dump($keys_from_parameter);
-			var_dump($keys_from_graph);
+			#var_dump($parameter);
+			var_dump($keys_from_parameter);
+			var_dump($value_from_parameter);
 			echo '</pre>';
 			
 		}
@@ -61,6 +68,25 @@ class Missionchecker{
 	}
 	
 	
+	protected function _end_of_array_recursive($multiarr){
+
+		$listofkeys = array_keys($multiarr);
+		$lastkey = end($listofkeys);
+		
+		var_dump($lastkey);
+		
+		if(is_array($multiarr[$lastkey])){
+		
+			$this->_end_of_array_recursive($multiarr[$lastkey]);
+		
+		}else{
+			
+			return $lastkey;
+		
+		}
+		
+		
+	}
 
 	
 	protected function _array_key_recursive($array){

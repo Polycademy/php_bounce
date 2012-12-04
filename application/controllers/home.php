@@ -104,10 +104,10 @@ class Home extends CI_Controller {
 		//$mission_parameters:
 		//ALWAYS START WITH THE ERROR INDEX (if no error, why bother checking?)
 		//THEN TREE BRANCH
-		//THEN = value
+		//LAST TREE ELEMENT IS ALWAYS RESULT (if not using result, just put whatever in, you just need something)
 		
 		//testing: "echo true;"
-		$mission_parameters['echo_true_check']['stmt_echo']['subnodes']['exprs'][0]['expr_constfetch']['subnodes']['name']['name']['subnodes']['parts'][0] = 'true';
+		$mission_parameters['echo_true_check']['stmt_echo']['subnodes']['exprs'][0]['expr_constfetch']['subnodes']['name']['name']['subnodes']['parts'][0]['true'] = '';
 		
 		//This will be matched to the returned mission errors, and a final array of error messages will be outputted
 		$mission_error_msgs = array(
