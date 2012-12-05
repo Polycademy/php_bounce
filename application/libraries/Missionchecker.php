@@ -34,38 +34,20 @@ class Missionchecker{
 			//tests gives the simplest list of how many endpoints there'll be (it is also in the order of end points)
 			$values = array_keys($test_block['tests']);
 			
-			echo '<h4>Values for testing</h4>';
-			var_dump($values);
-			
 			foreach($test_block['paths'] as $base_path => $children){
 			
-				var_dump($base_path);
-				var_dump($children);
 			
 				//if the children is an array, then we need to a recursive loop to build up all the children
 				if(is_array($children)){
 				
-					#echo ('<h4>$children is an array</h4>');
-					
 					$child_paths = $this->_build_child_paths($children);
-					
-					//here is the incorrect output
-					//AND subNode:var/node:Expr_Variable/subNode:Name/scalar:string='%s'AND subNode:expr/node:Scalar_String/subNode:value/scalar:string='%s
-					//IT should BE:
-					//subNode:var/node:Expr_Variable/subNode:Name/scalar:string='%s' AND subNode:expr/node:Scalar_String/subNode:value/scalar:string='%s'\
-					echo '<h4>Look childpath!</h4>';
-					var_dump($child_paths);
-					
-					$full_path = $base_path . '[' . $child_paths . ']';
-					#$test_block['paths'][$base_path] = vsprintf($full_path, $values);
-					$test_block['paths'][$base_path] = $full_path;
+					$full_path = $base_path . '[' . $child_paths . ']';					
+					$test_block['paths'][$base_path] = vsprintf($full_path, $values);
 				
 				//if children is not an array, then just the children as the path (the base_path is more likely to be just a key, and the children should be the full path
 				}else{
 				
-					echo ('<h4>$children is NOT an array</h4>');
-				
-					//the full path would be just the children + the the first value (because there would only be value to test against
+					//the full path would be just the children + the the first value (because there would only be 1 value to test against)
 					//what happens when you don't want to test the value? can there be a character for any value?
 					$test_block['paths'][$base_path] = $children . '=\'' . array_shift($values) . '\'';
 				
@@ -77,11 +59,10 @@ class Missionchecker{
 		
 		}
 		
-		echo '<h4>Final Parameters</h4>';
 		var_dump($parameters);
 		
 		
-		return true;
+		return $parameters;
 	
 	}
 	
@@ -99,7 +80,7 @@ class Missionchecker{
 			reset($paths); //resets the key
 			//compares the current key (child) to the resetted key (key($paths))
 			if($child !== key($paths)){
-				$final_path .= ' AND ';
+				$final_path .= ' and ';
 			}
 			
 			if(is_array($subchild)){

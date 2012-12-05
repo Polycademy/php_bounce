@@ -29,13 +29,6 @@ class Home extends CI_Controller {
 		
 		$test_code = '
 		$my_chinese_surname = \'Qiu\';
-		$my_chinese_firstname = \'Yulong\';
-		
-		if($my_chinese_surname == \'Qiu\'){
-			echo true;
-		}else{
-			return false;
-		}
 		';
 		
 		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
@@ -130,14 +123,14 @@ class Home extends CI_Controller {
 					'//node:Expr_Assign' => array(
 						'subNode:var/node:Expr_Variable' => array(
 							'subNode:Name/scalar:string',
-							'subNode:Name/scalar:string',
-							'subNode:Name/scalar:string' => array(
-								'BLAHBLAHBLAH',
-								'BLAHBLAHBLAH',
-							),
 						),
 						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
 					),
+					'//node:Edfn' => array(
+						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
+						'subNode:dsfdgexpr/node:Scalar_String/subNode:value/scalar:string',
+					),
+					'lol' => '//node:fdgfdg gfhfghf ghfghfgh',
 				),
 				'tests'	=> array(
 					//THIS GOES IN ORDER OF FINAL ENDPOINTS
