@@ -99,43 +99,33 @@ class Home extends CI_Controller {
 		#echo '</pre>';
 		
 		//begin mission checking
-		
-		//$mission_parameters:
-		//ALWAYS START WITH THE ERROR INDEX (if no error, why bother checking?)
-		//THEN TREE BRANCH
-		//LAST TREE ELEMENT IS ALWAYS RESULT (if not using result, just put whatever in, you just need something)
-		
-		//testing: "echo true;"
-		#$mission_parameters['echo_true_check']['stmt_echo']['subnodes']['exprs'][0]['expr_constfetch']['subnodes']['name']['name']['subnodes']['parts'][0]['true'] = '';
-		
-		//Mission parameters
-		//error_index
-		//value (of query) => query_path (value of query can be (string)'false' for no check)
-		
-		//This is filter by subnodes, it can get quite complicated 
-		#/meadinkent/record[comp_div='MENSWEAR' and sty_ret_type='ACCESSORIES']
-		//there is 2 final endpoints here
+		//mission parameters are build like this:
+		//test_name => test_block
+		//within test_block['paths'] there can be multiple paths to check, and each path can either by singular or multibranch tests
+		//this is done via creating subarrays, and the keys of the arrays represent parent paths, the subpaths represent multibranches
+		//all path tests are done with "AND"
+		//except at the base path, in which case there can be multiple paths corresponding to multiple test messages
+		//within test_block['tests'] there can be multiple tests
+		//each test's key is the error message
+		//each test's values is an array of an ordered value set that is meant to be passed to the paths
+		//the number of values need to correspond with the number of branch endpoints for each branch
+		//the value of the test can be "*" if you don't care what the value is
 		$mission_parameters = array(
-			//test_name => test_block
 			'variable_declaration'	=> array(
 				'paths'	=> array(
-					//THIS GOES IN ORDER OF FINAL ENDPOINTS
+					//basepath is single endpoint, its array is multiendpoint
 					'//node:Expr_Assign' => array(
 						'subNode:var/node:Expr_Variable' => array(
 							'subNode:Name/scalar:string',
 						),
 						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
 					),
-					'//node:Edfn' => array(
-						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
-						'subNode:dsfdgexpr/node:Scalar_String/subNode:value/scalar:string',
-					),
-					'lol' => '//node:fdgfdg gfhfghf ghfghfgh',
 				),
 				'tests'	=> array(
-					//THIS GOES IN ORDER OF FINAL ENDPOINTS
-					'my_chinese_surname'	=> 'Error, you need to make sure to declare a variable called [[my_chinese_surname]]',
-					'Qiu'	=> 'Error, you need to make sure the variable [[my_chinese_surname]] is equal to [[Qiu]]',
+					'Error, you need to make sure to declare a variable called [[my_chinese_surname]] with the value [[Qiu]]' => array(
+						'my_chinese_surname',
+						'Qiu'
+					),
 				),
 			),
 		);
