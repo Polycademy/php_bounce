@@ -123,12 +123,18 @@ class Home extends CI_Controller {
 		#/meadinkent/record[comp_div='MENSWEAR' and sty_ret_type='ACCESSORIES']
 		//there is 2 final endpoints here
 		$mission_parameters = array(
+			//test_name => test_block
 			'variable_declaration'	=> array(
 				'paths'	=> array(
 					//THIS GOES IN ORDER OF FINAL ENDPOINTS
 					'//node:Expr_Assign' => array(
 						'subNode:var/node:Expr_Variable' => array(
 							'subNode:Name/scalar:string',
+							'subNode:Name/scalar:string',
+							'subNode:Name/scalar:string' => array(
+								'BLAHBLAHBLAH',
+								'BLAHBLAHBLAH',
+							),
 						),
 						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
 					),

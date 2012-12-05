@@ -31,42 +31,102 @@ class Missionchecker{
 	
 		foreach($parameters as $test_name => &$test_block){
 		
-			//this will return one single epic xpath as the paths, it will have type specifier arguments, that need to be replaced with the value tests
-			$test_block['paths'] = $this->_build_parent_child_paths($test_block['paths']);
-			
 			//tests gives the simplest list of how many endpoints there'll be (it is also in the order of end points)
 			$values = array_keys($test_block['tests']);
 			
-			$test_block['paths'] = vsprintf($test_block['paths'], $values);
+			echo '<h4>Values for testing</h4>';
+			var_dump($values);
+			
+			foreach($test_block['paths'] as $base_path => $children){
+			
+				var_dump($base_path);
+				var_dump($children);
+			
+				//if the children is an array, then we need to a recursive loop to build up all the children
+				if(is_array($children)){
+				
+					#echo ('<h4>$children is an array</h4>');
+					
+					$child_paths = $this->_build_child_paths($children);
+					
+					//here is the incorrect output
+					//AND subNode:var/node:Expr_Variable/subNode:Name/scalar:string='%s'AND subNode:expr/node:Scalar_String/subNode:value/scalar:string='%s
+					//IT should BE:
+					//subNode:var/node:Expr_Variable/subNode:Name/scalar:string='%s' AND subNode:expr/node:Scalar_String/subNode:value/scalar:string='%s'\
+					echo '<h4>Look childpath!</h4>';
+					var_dump($child_paths);
+					
+					$full_path = $base_path . '[' . $child_paths . ']';
+					#$test_block['paths'][$base_path] = vsprintf($full_path, $values);
+					$test_block['paths'][$base_path] = $full_path;
+				
+				//if children is not an array, then just the children as the path (the base_path is more likely to be just a key, and the children should be the full path
+				}else{
+				
+					echo ('<h4>$children is NOT an array</h4>');
+				
+					//the full path would be just the children + the the first value (because there would only be value to test against
+					//what happens when you don't want to test the value? can there be a character for any value?
+					$test_block['paths'][$base_path] = $children . '=\'' . array_shift($values) . '\'';
+				
+				}
+				
+				
+			}
+			
 		
 		}
+		
+		echo '<h4>Final Parameters</h4>';
+		var_dump($parameters);
 		
 		
 		return true;
 	
 	}
 	
-	protected function _build_parent_child_paths($paths){
+	//we know $paths at this point has to be an array
+	protected function _build_child_paths($paths = array()){
+	
+		#/meadinkent/record[comp_div='MENSWEAR' and sty_ret_type='ACCESSORIES']
+		#$new_path = $base_path . "[CHILDpath1[CHILDpath1.1[CHILDpath1.1.1='%s'] AND CHILDpath1.2='%s'] AND CHILDpath2='%s']";
 		
-			//by reference so we can change them
-			foreach($paths as $base_path => $child_path){
+		//final_path has to be initialised, as it will be built up...
+		$final_path = '';
+		foreach($paths as $child => $subchild){
+		
+			//we're adding " ANDs " inbetween the subchilds, but not at the start
+			reset($paths); //resets the key
+			//compares the current key (child) to the resetted key (key($paths))
+			if($child !== key($paths)){
+				$final_path .= ' AND ';
+			}
 			
-				$new_path = 
+			if(is_array($subchild)){
+			
+				$final_path .= $child;
+				//is the subchild contain only one element?
+				//if so we need to be recursive
+				if(count($subchild, COUNT_RECURSIVE) > 1){
 				
-				if(is_array($child_path)){
-					
+					$final_path .= '[' . $this->_build_child_paths($subchild) . ']';
+				
+				}else{
+				
+					$final_path .= '/' . implode($subchild) . '=\'%s\'';
+				
 				}
-				
-				#/meadinkent/record[comp_div='MENSWEAR' and sty_ret_type='ACCESSORIES']
-				#//
-				$new_path = $base_path . '[CHILDpath1[CHILDpath1.1[CHILDpath1.1.1=%s] AND CHILDpath1.2=%s] AND CHILDpath2=%s]';
-				
-				var_dump($base_path);
+			
+			}else{
+			
+				$final_path .= $subchild . '=\'%s\'';
 			
 			}
 		
+		}
+		
 		//we return 1 COMPLETE XPATH with everything inside of it (except of course values, which need to be replaced)
-		return $new_path;
+		return $final_path;
 	
 	}
 	
