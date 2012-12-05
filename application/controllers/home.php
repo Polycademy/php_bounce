@@ -79,14 +79,20 @@ class Home extends CI_Controller {
 		$visitor_pattern->addVisitor(new PHPParser_NodeVisitor_NameResolver);
 		//init custom convert traverser
 		//note that I changed NodeAbstract to have public variables
-		$php_convertor = new PHPParser_ConvertorTraverser;		
+		#$php_convertor = new PHPParser_ConvertorTraverser;
+		
+		//init the seraliser so we can query it later
+		$php_xml_serialiser = new PHPParser_Serializer_XML;
+		
+		
 		//produce a graph for analysis
 		//AST is a abstract syntax tree, the graph is an AST
 		$php_parser_error = false;
 		try{
 			$mission_graph = $php_parser->parse($test_code);
 			$mission_graph = $visitor_pattern->traverse($mission_graph);
-			$mission_graph = $php_convertor->traverse($mission_graph);
+			#$mission_graph = $php_convertor->traverse($mission_graph);
+			$mission_graph = $php_xml_serialiser->serialize($mission_graph);
 		}catch(PHPParser_Error $e){
 			//oh no possible error (if there is an error, cancel the execution and send this out)
 			$php_parser_error = 'Parse Error: ' . $e->getMessage();
@@ -95,9 +101,9 @@ class Home extends CI_Controller {
 		#echo '<pre><h2>PHP Parser Error</h2>';
 		#var_dump ($php_parser_error);
 		#echo '</pre>';
-		echo '<pre><h2>MISSION GRAPH</h2>';
-		var_dump ($mission_graph);
-		echo '</pre>';
+		#echo '<pre><h2>MISSION GRAPH</h2>';
+		var_dump($mission_graph);
+		#echo '</pre>';
 		
 		//begin mission checking
 		
@@ -107,18 +113,37 @@ class Home extends CI_Controller {
 		//LAST TREE ELEMENT IS ALWAYS RESULT (if not using result, just put whatever in, you just need something)
 		
 		//testing: "echo true;"
-		$mission_parameters['echo_true_check']['stmt_echo']['subnodes']['exprs'][0]['expr_constfetch']['subnodes']['name']['name']['subnodes']['parts'][0]['true'] = '';
+		#$mission_parameters['echo_true_check']['stmt_echo']['subnodes']['exprs'][0]['expr_constfetch']['subnodes']['name']['name']['subnodes']['parts'][0]['true'] = '';
 		
-		//This will be matched to the returned mission errors, and a final array of error messages will be outputted
-		$mission_error_msgs = array(
-			'echo_true_check'	=> array(
-				'missing'	=> '"echo true;" is missing',
-				'incorrect'	=> '"echo X;" is incorrect, you need need echo the boolean true!',
+		//Mission parameters
+		//error_index
+		//value (of query) => query_path (value of query can be (string)'false' for no check)
+		
+		//This is filter by subnodes, it can get quite complicated 
+		#/meadinkent/record[comp_div='MENSWEAR' and sty_ret_type='ACCESSORIES']
+		//there is 2 final endpoints here
+		$mission_parameters = array(
+			'variable_declaration'	=> array(
+				'paths'	=> array(
+					//THIS GOES IN ORDER OF FINAL ENDPOINTS
+					'//node:Expr_Assign' => array(
+						'subNode:var/node:Expr_Variable' => array(
+							'subNode:Name/scalar:string',
+						),
+						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
+					),
+				),
+				'tests'	=> array(
+					//THIS GOES IN ORDER OF FINAL ENDPOINTS
+					'my_chinese_surname'	=> 'Error, you need to make sure to declare a variable called [[my_chinese_surname]]',
+					'Qiu'	=> 'Error, you need to make sure the variable [[my_chinese_surname]] is equal to [[Qiu]]',
+				),
 			),
 		);
 		
-		$this->missionchecker->init_options($mission_graph, $mission_parameters, $mission_error_msgs);
-		$this->missionchecker->run_check();
+		$this->missionchecker->init_options($mission_graph, $mission_parameters);
+		#$this->missionchecker->graph_check();
+		#$this->missionchecker->run_check();
 		
 		//time to execute
 		$fake_server_env_prepend_file = APPPATH . 'helpers/phpsandbox_prepend_helper.php';

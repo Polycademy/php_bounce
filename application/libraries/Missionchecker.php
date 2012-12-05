@@ -10,8 +10,6 @@ class Missionchecker{
 	protected $_CI;
 	protected $_graph = array();
 	protected $_parameters = array();
-	protected $_error_messages = array();
-	protected $_errors = array();
 	
 	public function __construct(){
 	
@@ -19,11 +17,91 @@ class Missionchecker{
 	
 	}
 	
-	public function init_options($graph, $parameters, $error_messages){
+	public function init_options($graph, $parameters){
 	
 		$this->_graph = $graph;
-		$this->_parameters = $parameters;
-		$this->_error_messages = $error_messages;
+		
+		$this->_parameters = $this->_build_xpaths($parameters);
+	
+	}
+	
+	protected function _build_xpaths($parameters){
+	
+		var_dump($parameters);
+	
+		foreach($parameters as $test_name => &$test_block){
+		
+			//this will return one single epic xpath as the paths, it will have type specifier arguments, that need to be replaced with the value tests
+			$test_block['paths'] = $this->_build_parent_child_paths($test_block['paths']);
+			
+			//tests gives the simplest list of how many endpoints there'll be (it is also in the order of end points)
+			$values = array_keys($test_block['tests']);
+			
+			$test_block['paths'] = vsprintf($test_block['paths'], $values);
+		
+		}
+		
+		
+		return true;
+	
+	}
+	
+	protected function _build_parent_child_paths($paths){
+		
+			//by reference so we can change them
+			foreach($paths as $base_path => $child_path){
+			
+				$new_path = 
+				
+				if(is_array($child_path)){
+					
+				}
+				
+				#/meadinkent/record[comp_div='MENSWEAR' and sty_ret_type='ACCESSORIES']
+				#//
+				$new_path = $base_path . '[CHILDpath1[CHILDpath1.1[CHILDpath1.1.1=%s] AND CHILDpath1.2=%s] AND CHILDpath2=%s]';
+				
+				var_dump($base_path);
+			
+			}
+		
+		//we return 1 COMPLETE XPATH with everything inside of it (except of course values, which need to be replaced)
+		return $new_path;
+	
+	}
+	
+	
+	public function graph_check(){
+	
+		if(empty($this->_graph) OR empty($this->_parameters)){
+			$this->_errors = array(
+				'Please set up the options for checking, we need a graph and parameters'
+			);
+		}
+		
+		$xml_doc = new DOMDocument;
+		$xml_doc->preserveWhiteSpace = false;
+		$xml_doc->loadXML($this->_graph);
+		$xpath = new DOMXPath($xml_doc);
+		
+		//$error_index matches with the errors
+		//query is the correct path (need to check if can be a relative path)
+		//if it is an absolute path, will require recursion...
+		//also not sure how to check value, but will require it from the paths
+		foreach($this->_parameters as $error_index => $query){
+			#var_dump($error_index); //outputs echo_true_check
+			#var_dump($query); //outputs array
+			#var_dump($query['xpath']); //outputs xpath
+			#var_dump($query['value']); //outputs value to check
+			
+			$find_code = $xpath->query($query['xpath']);
+			
+			foreach($find_code as $code) {
+				var_dump($code->nodeValue);
+			}
+			
+			
+		}
 	
 	}
 	
@@ -55,12 +133,12 @@ class Missionchecker{
 			$value_from_parameter = array_pop($keys_from_parameter);
 			
 			
-			echo '<pre>';
+			#echo '<pre>';
 			#var_dump($error_index);
 			#var_dump($parameter);
 			var_dump($keys_from_parameter);
 			var_dump($value_from_parameter);
-			echo '</pre>';
+			#echo '</pre>';
 			
 		}
 		
@@ -73,7 +151,7 @@ class Missionchecker{
 		$listofkeys = array_keys($multiarr);
 		$lastkey = end($listofkeys);
 		
-		var_dump($lastkey);
+		$this->_CI->firephp->log($lastkey);
 		
 		if(is_array($multiarr[$lastkey])){
 		
