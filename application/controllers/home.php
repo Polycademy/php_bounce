@@ -131,7 +131,7 @@ class Home extends CI_Controller {
 		);
 		
 		$this->missionchecker->init_options($mission_graph, $mission_parameters);
-		#$this->missionchecker->graph_check();
+		$this->missionchecker->graph_check();
 		#$this->missionchecker->run_check();
 		
 		//time to execute

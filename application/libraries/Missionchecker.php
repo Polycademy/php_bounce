@@ -22,6 +22,8 @@ class Missionchecker{
 		$this->_graph = $graph;
 		
 		$this->_parameters = $this->_build_xpaths($parameters);
+		
+		#var_dump($this->_parameters);
 	
 	}
 	
@@ -135,17 +137,35 @@ class Missionchecker{
 		//query is the correct path (need to check if can be a relative path)
 		//if it is an absolute path, will require recursion...
 		//also not sure how to check value, but will require it from the paths
-		foreach($this->_parameters as $error_index => $query){
+		foreach($this->_parameters as $test_name => $test_block){
+		
+			foreach($test_block['map'] as $error_msg => $path_query){
+			
+				var_dump($path_query);
+			
+				$find_code = $xpath->query($path_query);
+				var_dump($find_code);
+				
+				#var_dump($find_code->nodeValue);
+				
+				foreach($find_code as $code) {
+					var_dump($code);
+				
+					var_dump($code->nodeValue);
+				}
+				
+			
+			}
+			
+		
 			#var_dump($error_index); //outputs echo_true_check
 			#var_dump($query); //outputs array
 			#var_dump($query['xpath']); //outputs xpath
 			#var_dump($query['value']); //outputs value to check
 			
-			$find_code = $xpath->query($query['xpath']);
-			
-			foreach($find_code as $code) {
-				var_dump($code->nodeValue);
-			}
+			#foreach($find_code as $code) {
+			#	var_dump($code->nodeValue);
+			#}
 			
 			
 		}
