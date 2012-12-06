@@ -79,7 +79,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'email', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('firephp', 'phplint', 'phpsandboxer', 'phpwhitelist', 'missionchecker');
+$autoload['libraries'] = array('form_validation', 'database', 'firephp', 'phplint', 'phpsandboxer', 'phpwhitelist', 'missionchecker');
 
 
 /*

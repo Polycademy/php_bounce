@@ -5,7 +5,89 @@
  *
  * Designed and built with all the love in the world by ROGER!.
  */
- 
+ /* ==========================================================================
+   MIXINS & GLOBAL VARIABLES
+   ========================================================================== */
+@container_padding: 1.2%;
+
+.border_radius(@radius){
+	-webkit-border-radius: @radius;
+	-moz-border-radius: @radius;
+	border-radius: @radius;
+}
+
+/* ==========================================================================
+   CONTAINERS
+   ========================================================================== */
+body {
+	padding-top: 41px;
+	font-family: arial, sans-serif;
+	-webkit-font-smoothing: antialiased;
+	font-smoothing: antialiased;
+	color: #464a51;
+}
+
+.container{
+	padding: 0 @container_padding;
+}
+
+ /* ==========================================================================
+   HEADINGS
+   ========================================================================== */
+h1{
+	text-align: center;
+	font-size: 60px;
+	margin: 20px;
+}
+
+h2{
+	text-align: center;
+	margin: 20px;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+header{
+	overflow: hidden;
+}
+   
+.center_nav{
+	.nav{
+		text-align: center;
+		float: none;
+		>li{
+			float: none;
+			display: inline-block;
+			*display:inline; /* ie7 fix */
+			*zoom:1; /* hasLayout ie7 trigger */
+			vertical-align: top;
+		}
+	}
+	.btn-navbar {
+		width: 16px;
+		height: 13px;
+		margin: 5px auto;
+		float: none;
+		clear: both;
+	}
+}
+
+ /* ==========================================================================
+   MAIN SECTIONS
+   ========================================================================== */
+.main_sections{
+	.mission_parameters{
+		overflow: auto;
+	}
+	.code_editor{
+
+	}
+	.output_zone{
+		overflow: auto;
+	}
+}
+
  /* ==========================================================================
    CODE MIRROR
    ========================================================================== */
@@ -20,7 +102,7 @@
 
 .CodeMirror-scroll {
 	overflow: auto;
-	height: 300px;
+	height: 400px;
 	/* This is needed to prevent an IE[67] bug where the scrolled content
 	is visible outside of the scrolling box. */
 	position: relative;

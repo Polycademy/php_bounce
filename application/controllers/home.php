@@ -157,10 +157,6 @@ class Home extends CI_Controller {
 	
 	}
 	
-	public function see(){
-		phpinfo();
-	}
-	
 	private function _load_views($main){
 	
 		$this->load->view('header_view', $this->_view_data);

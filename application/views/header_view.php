@@ -20,3 +20,22 @@
         <!--[if lt IE 7]>
             <p class="chromeframe">You are using an outdated browser. <a href="http://browsehappy.com/">Upgrade your browser today</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to better experience this site.</p>
         <![endif]-->
+		<header>
+			<nav class="navbar navbar-fixed-top center_nav" id="main_nav">
+				<div class="navbar-inner">
+					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</a>
+					<div class="nav-collapse collapse container">
+						<ul class="nav">
+							<li><a href="#home">PHP Bounce</a></li>
+							<li class="divider-vertical"></li>
+							<li><a href="#what_is">Mission 1</a></li>
+							<li class="divider-vertical"></li>
+						</ul>
+					</div>
+				</div>
+			</nav>
+		</header>
