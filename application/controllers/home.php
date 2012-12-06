@@ -28,7 +28,10 @@ class Home extends CI_Controller {
 		*/
 		
 		$test_code = '
-		$my_chinese_surname = \'Qiu\';
+		if(true){
+			$my_chinese_surname = \'Qu\';
+			$my_chinese_surname = \'Qiu\';
+		}
 		';
 		
 		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
@@ -109,14 +112,13 @@ class Home extends CI_Controller {
 		//each test's key is the error message
 		//each test's values is an array of an ordered value set that is meant to be passed to the paths
 		//the number of values need to correspond with the number of branch endpoints for each branch
-		//the value of the test can be "*" if you don't care what the value is
 		$mission_parameters = array(
 			'variable_declaration'	=> array(
 				'paths'	=> array(
 					//basepath is single endpoint, its array is multiendpoint
 					'//node:Expr_Assign' => array(
 						'subNode:var/node:Expr_Variable' => array(
-							'subNode:Name/scalar:string',
+							'subNode:name/scalar:string',
 						),
 						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
 					),
@@ -132,7 +134,8 @@ class Home extends CI_Controller {
 		
 		$this->missionchecker->init_options($mission_graph, $mission_parameters);
 		$this->missionchecker->graph_check();
-		#$this->missionchecker->run_check();
+		$mission_errors = $this->missionchecker->get_error_messages();
+		var_dump($mission_errors);
 		
 		//time to execute
 		$fake_server_env_prepend_file = APPPATH . 'helpers/phpsandbox_prepend_helper.php';
