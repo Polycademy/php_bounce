@@ -142,38 +142,12 @@ class Missionchecker{
 		
 			foreach($test_block['map'] as $error_msg => $path_query){
 			
-				#var_dump($path_query);
-			
 				$find_code = $xpath->query($path_query);
 				
-				var_dump($find_code->length);
-				
-				//if we found more than 1 match
-				//then it is a match!
-				if($find_code->length > 0){
-				
-					foreach($find_code as $code) {
-						echo 'START';
-						#var_dump($code);
-						//null
-						#var_dump($code->nextSibling);
-						//2222my_chinese_surname22Qu
-						#var_dump($code->previousSibling->nodeValue);
-						//3333my_chinese_surname33Qiu
-						var_dump($code->nodeValue);
-						#var_dump($code->firstChild->nodeValue);
-						#var_dump($code->lastChild->nodeValue);
-						#var_dump($code->parentNode->nodeValue);
-						#var_dump($code->childNodes->length);
-						#var_dump($code->attributes->length);
-						
-					}
-					
-				//otherwise error msg!
-				}else{
-				
+				//if no match, then put out the errors
+				//$find_code is part of the DOMNode class (you need foreach to loop across them) //check doc if you want to query out some stuff
+				if(empty($find_code->length)){
 					$this->_errors[] = $error_msg;
-				
 				}
 			
 			}

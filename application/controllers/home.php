@@ -29,7 +29,7 @@ class Home extends CI_Controller {
 		
 		$test_code = '
 		if(true){
-			$my_chinese_surnae = \'Qiu\';
+			$my_chinese_surname = \'Qiu\';
 		}
 		';
 		
@@ -65,28 +65,20 @@ class Home extends CI_Controller {
 		//WHITELIST PLACEHOLDER
 		
 		//PHP-Parser AKA Mission Check
-		//mission parameters correspond to the mission_graph, you're doing a loose array search
 		
 		//init the parser
 		$php_parser = new PHPParser_Parser(new PHPParser_Lexer);
 		//resolve namespaces (using visitor pattern)
 		$visitor_pattern = new PHPParser_NodeTraverser;
 		$visitor_pattern->addVisitor(new PHPParser_NodeVisitor_NameResolver);
-		//init custom convert traverser
-		//note that I changed NodeAbstract to have public variables
-		#$php_convertor = new PHPParser_ConvertorTraverser;
-		
 		//init the seraliser so we can query it later
 		$php_xml_serialiser = new PHPParser_Serializer_XML;
 		
-		
 		//produce a graph for analysis
-		//AST is a abstract syntax tree, the graph is an AST
 		$php_parser_error = false;
 		try{
 			$mission_graph = $php_parser->parse($test_code);
 			$mission_graph = $visitor_pattern->traverse($mission_graph);
-			#$mission_graph = $php_convertor->traverse($mission_graph);
 			$mission_graph = $php_xml_serialiser->serialize($mission_graph);
 		}catch(PHPParser_Error $e){
 			//oh no possible error (if there is an error, cancel the execution and send this out)
@@ -97,7 +89,7 @@ class Home extends CI_Controller {
 		#var_dump ($php_parser_error);
 		#echo '</pre>';
 		#echo '<pre><h2>MISSION GRAPH</h2>';
-		var_dump($mission_graph);
+		#var_dump($mission_graph);
 		#echo '</pre>';
 		
 		//begin mission checking
@@ -138,7 +130,6 @@ class Home extends CI_Controller {
 		$this->missionchecker->init_options($mission_graph, $mission_parameters);
 		$this->missionchecker->graph_check();
 		$mission_errors = $this->missionchecker->get_error_messages();
-		var_dump($mission_errors);
 		
 		//time to execute
 		$fake_server_env_prepend_file = APPPATH . 'helpers/phpsandbox_prepend_helper.php';
