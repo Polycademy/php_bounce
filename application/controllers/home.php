@@ -65,12 +65,11 @@ class Home extends CI_Controller {
 		*/
 		
 		//WHITELIST PLACEHOLDER
-		//please note any custom functions and classes need to be passed to the whitelist
-		//whitelist cannot be used for freeform due to infinite names for functions and classes
+		//please note any custom functions and classes need to be passed to the whitelist (otherwise you cannot use whitelist)
 		$this->phpwhitelist->init_options($test_code);
 		$this->phpwhitelist->run_whitelist();
 		$white_list_errors = $this->phpwhitelist->get_errors();
-		var_dump($white_list_errors);
+		#var_dump($white_list_errors);
 		
 		//PHP-Parser
 		
