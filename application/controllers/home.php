@@ -29,8 +29,7 @@ class Home extends CI_Controller {
 		
 		$test_code = '
 		if(true){
-			$my_chinese_surname = \'Qu\';
-			$my_chinese_surname = \'Qiu\';
+			$my_chinese_surnae = \'Qiu\';
 		}
 		';
 		
@@ -122,11 +121,15 @@ class Home extends CI_Controller {
 						),
 						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
 					),
+					'//node:Expr_Assign/subNode:var/node:Expr_Variable/subNode:name/scalar:string',
 				),
 				'tests'	=> array(
 					'Error, you need to make sure to declare a variable called [[my_chinese_surname]] with the value [[Qiu]]' => array(
 						'my_chinese_surname',
 						'Qiu'
+					),
+					'Error, you need to make sure to declare a variable called [[my_chinese_surname]]' => array(
+						'my_chinese_surname',
 					),
 				),
 			),
