@@ -13,7 +13,6 @@
 				<ul class="nav nav-tabs">
 					<li><?= anchor('mission_editor', 'Mission Editor List') ?></li>
 					<li><?= anchor('mission_editor/add', 'Mission Editor Add') ?></li>
-					<li><?= anchor('mission_editor/update', 'Mission Editor Update') ?></li>
 				</ul>
 			</nav>
 			<?= form_open($editor_submit, array('class' => 'mission_editor_form')) ?>

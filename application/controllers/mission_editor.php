@@ -103,6 +103,7 @@ class Mission_editor extends CI_Controller {
 		
 	}
 	
+	//UPDATE can DELETE aswell, so we have A DELETE BUTTON added in with the type
 	public function update($id){
 	
 		$this->_view_data += array(
