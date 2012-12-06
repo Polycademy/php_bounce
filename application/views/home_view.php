@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-		<div id="container">
+		<div class="container">
 			<h1>Welcome to CodeIgniter!</h1>
 			<h2>Do something</h2>
 			<?= form_open($code_submit) ?>

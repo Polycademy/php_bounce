@@ -25,7 +25,7 @@ class Mission_model extends CI_Model {
 					'mission_number'	=> $row->mission_number,
 					'title'				=> $row->title,
 					'description'		=> $row->description,
-					'parameters'		=> var_export(unserialize($row->parameters), true), //need to unserialise this into an array
+					'parameters'		=> stripslashes(var_export(unserialize(base64_decode($row->parameters)), true)),
 				);
 				
 			}
@@ -58,9 +58,15 @@ class Mission_model extends CI_Model {
 	
 	public function add_mission($new_mission){
 	
-		$this->db->insert('missions', $new_mission);
+		$new_mission['parameters'] = base64_encode(serialize($new_mission));
+	
+		$query = $this->db->insert('missions', $new_mission);
 		
-		return $this->db->affected_rows();
+		if($query){
+			return $this->db->affected_rows();
+		}else{
+			return false;
+		}
 	
 	}
 	

@@ -1,5 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-		<div id="container">
+		<div class="container">
 			<h1 class="main_heading">PHP Bounce</h1>
 			<div class="main_sections row-fluid">
 				<div class="span4 mission_parameters">

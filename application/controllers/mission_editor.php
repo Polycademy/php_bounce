@@ -55,21 +55,23 @@ class Mission_editor extends CI_Controller {
 				'rules'   => 'required',
 			)
 		);
-
+		
+		$this->form_validation->set_rules($validation_rules);
+		
 		if($this->form_validation->run() == true){		
 		
 			//YES AWESOME... (insert to database)
 			$new_mission = array(
-				'title' => $this->input->post('title', true),
-				'description' => $this->input->post('description'),
-				'number'	=> $this->input->post('number', true),
-				'parameters'	=> serialize($this->input->post('parameters')),
+				'title'			=> $this->input->post('title', true),
+				'description'	=> $this->input->post('description'),
+				'mission_number'=> $this->input->post('number', true),
+				'parameters'	=> $this->input->post('parameters'),
 			);
 			
 			if(!$this->Mission_model->add_mission($new_mission)){
-				$status[] = 'Was unable to add the mission to the database';
+				$status = '<li>Was unable to add the mission to the database.</li>';
 			}else{
-				$status[] = 'Entered information into the database! Thanks!';
+				$status = '<li>Entered information into the database! Thanks!</li>';
 			}
 		
 		}else{
@@ -78,10 +80,9 @@ class Mission_editor extends CI_Controller {
 			
 		}
 		
-		var_dump($status);
-	
 		$this->_view_data += array(
 			'page_title'	=> 'Missions Editor Add PHP Bounce',
+			'type'			=> 'add',
 			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method(),
 			'status'		=> $status,
 		);
@@ -90,7 +91,7 @@ class Mission_editor extends CI_Controller {
 	
 	}
 	
-	private function mission_number_check($num){
+	public function mission_number_check($num){
 	
 		$check = $this->Mission_model->mission_number_check($num);
 		if(!empty($check)){
@@ -106,6 +107,7 @@ class Mission_editor extends CI_Controller {
 	
 		$this->_view_data += array(
 			'page_title'	=> 'Missions Editor Update PHP Bounce',
+			'type'			=> 'update',
 			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method() . '/' . $id,
 		);
 	

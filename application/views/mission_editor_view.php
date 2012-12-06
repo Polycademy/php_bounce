@@ -1,6 +1,21 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-		<div id="container">
-			<h1 class="main_heading">Mission Editor (LIST)</h1>
+		<div class="container">
+			<h1 class="main_heading">Mission List Editor</h1>
+			<? if(!empty($status)){ ?>
+				<div class="form_status">
+					<h4>Form Status Messages:</h4>
+					<ul>
+						<?=$status?>
+					</ul>
+				</div>
+			<? } ?>
+			<nav class="editor_nav">
+				<ul class="nav nav-tabs">
+					<li><?= anchor('mission_editor', 'Mission Editor List') ?></li>
+					<li><?= anchor('mission_editor/add', 'Mission Editor Add') ?></li>
+					<li><?= anchor('mission_editor/update', 'Mission Editor Update') ?></li>
+				</ul>
+			</nav>
 			<div class="mission_list">
 				<? if(empty($missions)){ ?>
 					<h2>Sorry no missions to show!</h2>

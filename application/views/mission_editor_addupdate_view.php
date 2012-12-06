@@ -1,24 +1,32 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
-		<div id="container">
-			<h1 class="main_heading">Mission Editor (ADD/UPDATE)</h1>
-			<? if(!empty($status)){ ?>	
-				<ul class="form_status">
-					<? foreach($form_status as $status){ ?>
-						<li><?=$status?></li>
-					<? } ?>
-				</ul>
+		<div class="container">
+			<h1 class="main_heading">Mission <?=($type == 'add')? 'Add' : 'Update' ?> Editor</h1>
+			<? if(!empty($status)){ ?>
+				<div class="form_status">
+					<h4>Form Status Messages:</h4>
+					<ul>
+						<?=$status?>
+					</ul>
+				</div>
 			<? } ?>
+			<nav class="editor_nav">
+				<ul class="nav nav-tabs">
+					<li><?= anchor('mission_editor', 'Mission Editor List') ?></li>
+					<li><?= anchor('mission_editor/add', 'Mission Editor Add') ?></li>
+					<li><?= anchor('mission_editor/update', 'Mission Editor Update') ?></li>
+				</ul>
+			</nav>
 			<?= form_open($editor_submit, array('class' => 'mission_editor_form')) ?>
 				<div class="main_sections row-fluid">
 					<div class="span6 mission_parameters">
 						<section class="parameter_container">
 							<h4>Enter Mission Details</h4>
 							<?= form_label('Mission Title', 'mission_title_input') ?>
-							<?= form_input(array('name'=>'title', 'id'=>'mission_title_input', 'value'=>set_value('title'))) ?>
+							<?= form_input(array('name'=>'title', 'class'=>'input-block-level', 'id'=>'mission_title_input', 'value'=>set_value('title'))) ?>
 							<?= form_label('Mission Description', 'mission_description_input') ?>
-							<?= form_input(array('name'=>'description', 'id'=>'mission_description_input', 'value'=>set_value('description'))) ?>
+							<?= form_textarea(array('name'=>'description', 'class'=>'input-block-level', 'id'=>'mission_description_input', 'value'=>set_value('description'))) ?>
 							<?= form_label('Mission Number', 'mission_number_input') ?>
-							<?= form_input(array('name'=>'number', 'id'=>'mission_number_input', 'value'=>set_value('number'))) ?>
+							<?= form_input(array('name'=>'number', 'class'=>'input-block-level', 'id'=>'mission_number_input', 'value'=>set_value('number'))) ?>
 						</section>
 					</div>
 					<div class="span6 code_editor">
@@ -28,7 +36,7 @@
 						</section>
 					</div>
 				</div>
-				<?= form_submit('submit', 'Submit') ?>
+				<?= form_submit(array('name'=>'submit', 'type'=>'submit', 'value'=>'Submit!', 'class'=>'btn btn-primary')) ?>
 			<?= form_close() ?>
 			<script src="<?= base_url($js_assets) ?>/codemirror/codemirror.js"></script>
 			<script src="<?= base_url($js_assets) ?>/codemirror/mode/php/php.js"></script>
