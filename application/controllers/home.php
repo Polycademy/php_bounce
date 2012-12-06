@@ -12,32 +12,27 @@ class Home extends CI_Controller {
 	}
 	
 	//TODO:
-	//Parse Check
-	//Parse Check parameters and friendly error messages
 	//Add in Whitelist
-	//Add in more error parsing regexes, because when they enter in a disabled function it goes like PHP Warning:  php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2 Warning: php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2
+	//Add in more error parsing regexes in the sandbox, because when they enter in a disabled function it goes like PHP Warning:  php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2 Warning: php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2
 	//TEST MALICIOUS CODE
 	public function index(){
 	
-		//always add <?php in front of it
+		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
+	
+		//TEST CODE
 		/*
 		TEST THIS
 		$y = str_replace('z', 'e', 'zxzc');
 		$y("malicious code");
 		APPARENTLY, WHITELIST DOES NOT WORK ON THIS
 		*/
-		
 		$test_code = '
 		if(true){
 			$my_chinese_surname = \'Qiu\';
 		}
 		';
 		
-		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
-		//MAKE SURE TO CHANGE THE PHP BINARY FOR the DESKTOP DEVELOPMENT WHEN CHANGING...
-		
-		//All Test Code, whether it is in phplint, phpsandboxer, phpparser, phpwhitelist will require <?php ahead of it.
-		//short open tags cannot be used here in execution, it will fail. It require <?php
+		//ADD <?php infront CANNOT USE short open tags for binary execution
 		if(!preg_match('/\A^(<\?php)(\s)+?/m', $test_code)){
 			$test_code = '<?php ' . $test_code;
 		}else{
@@ -63,8 +58,12 @@ class Home extends CI_Controller {
 		*/
 		
 		//WHITELIST PLACEHOLDER
+		$this->phpwhitelist->init_options($test_code);
+		$this->phpwhitelist->run_whitelist();
+		$white_list_errors = $this->phpwhitelist->get_errors();
+		#var_dump($white_list_errors);
 		
-		//PHP-Parser AKA Mission Check
+		//PHP-Parser
 		
 		//init the parser
 		$php_parser = new PHPParser_Parser(new PHPParser_Lexer);
@@ -92,7 +91,8 @@ class Home extends CI_Controller {
 		#var_dump($mission_graph);
 		#echo '</pre>';
 		
-		//begin mission checking
+		//Mission Check
+		
 		//mission parameters are build like this:
 		//test_name => test_block
 		//within test_block['paths'] there can be multiple paths to check, and each path can either by singular or multibranch tests

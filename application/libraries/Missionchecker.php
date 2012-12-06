@@ -124,9 +124,12 @@ class Missionchecker{
 	public function graph_check(){
 	
 		if(empty($this->_graph) OR empty($this->_parameters)){
+		
 			$this->_errors = array(
-				'Please set up the options for checking, we need a graph and parameters'
+				'Please set up the options for checking, we need a graph and parameters.'
 			);
+			return false;
+			
 		}
 		
 		$xml_doc = new DOMDocument;
