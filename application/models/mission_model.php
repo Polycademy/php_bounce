@@ -36,19 +36,11 @@ class Mission_model extends CI_Model {
 	
 	}
 	
-	public function get_parameters($id){
+	public function get_mission($id){
 	
 	}
 	
-	public function update_parameters($id){
-	
-	}
-	
-	public function get_description($id){
-	
-	}
-	
-	public function update_description($id){
+	public function update_mission($id){
 	
 	}
 	
