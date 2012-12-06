@@ -26,7 +26,8 @@ class Home extends CI_Controller {
 		APPARENTLY, WHITELIST DOES NOT WORK ON THIS
 		*/
 		$test_code = '
-		include(dfrgfdg.php);
+		include(gfgdg.php);
+		echo \'lol\';
 		';
 		
 		//ADD <?php infront CANNOT USE short open tags for binary execution
@@ -140,13 +141,16 @@ class Home extends CI_Controller {
 		$this->phpsandboxer->init_binary($this->config->item('php_binary'));
 		$this->phpsandboxer->init_env($fake_server_env_prepend_file);
 		$this->phpsandboxer->build_cli_options();
-		$this->phpsandboxer->execute_code($test_code, 'PHP Bounce');
+		$execution_output = $this->phpsandboxer->execute_code($test_code, 'PHP Bounce');
 		$execution_error = $this->phpsandboxer->get_parse_error();
 		$time_span = $this->phpsandboxer->get_time_span();
 		
 		
 		echo '<pre><h2>EXECUTION ERROR</h2>';
 		var_dump($execution_error);
+		echo '</pre>';
+		echo '<pre><h2>EXECUTION OUTPUT</h2>';
+		var_dump($execution_output);
 		echo '</pre>';
 		echo '<pre><h2>EXECUTION TIME</h2>';
 		var_dump($time_span);

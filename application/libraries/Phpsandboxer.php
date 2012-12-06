@@ -280,18 +280,14 @@ class Phpsandboxer{
 		echo '</pre>';
 		*/
 		
-		//if we get an error
-		//On windows computers, return_value will be -1 on error, on UNIX, 255 on error
-		if($return_value == -1 OR $return_value == 255){
-			
+		if(!empty($stderr)){
 			$this->_error = $this->_parse_error($stderr, $fname);
 			return false;
-			
 		}
 		
 		//yes no errors! syntax is all good
-		$this->_error = null;
-		return true;
+		$this->_error = false;
+		return $stdout;
 		
 	}
 	
