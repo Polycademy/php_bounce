@@ -11,23 +11,14 @@ class Home extends CI_Controller {
 		
 	}
 	
-	//TODO:
-	//Add in more error parsing regexes in the sandbox, because when they enter in a disabled function it goes like PHP Warning:  php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2 Warning: php_uname() has been disabled for security reasons in C:\wamp\bin\apache\Apache2.2.11\- on line 2
-	//TEST MALICIOUS CODE
 	public function index(){
 	
 		//THE PROCESS: LINT CHECK (LINE ERROR) => PARSE CHECK (ERROR MSG) => WHITELIST (ERROR MSG) => EXECUTE (LINE ERROR & ERROR MSG)
 	
 		//TEST CODE
-		/*
-		TEST THIS
-		$y = str_replace('z', 'e', 'zxzc');
-		$y("malicious code");
-		APPARENTLY, WHITELIST DOES NOT WORK ON THIS
-		*/
 		$test_code = '
-		include(gfgdg.php);
-		echo \'lol\';
+		$y = str_replace(\'z\', \'e\', \'zxzc\');
+		$y("malicious code");
 		';
 		
 		//ADD <?php infront CANNOT USE short open tags for binary execution
