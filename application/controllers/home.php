@@ -26,16 +26,7 @@ class Home extends CI_Controller {
 		APPARENTLY, WHITELIST DOES NOT WORK ON THIS
 		*/
 		$test_code = '
-		if(false){
-			require(\'/lol.php\');
-			$my_chinese_surname = \'Qiu\';
-			function my_function($lole){
-				echo $lole;
-			}
-			my_function($my_chinese_surname);
-			explode(\'i\', $my_chinese_surname);
-			eval("echo \'lol\';");
-		}
+		include(dfrgfdg.php);
 		';
 		
 		//ADD <?php infront CANNOT USE short open tags for binary execution
@@ -54,14 +45,14 @@ class Home extends CI_Controller {
 		$lint_checked_code = $this->phplint->lint_string($test_code, 'PHP Bounce'); // false or true
 		$syntax_error = $this->phplint->get_parse_error(); //gives error type and also error number line which works
 		
-		/*
+		
 		echo '<pre><h2>LINT CHECKED CODE</h2>';
 		var_dump($lint_checked_code);
 		echo '</pre>';
 		echo '<pre><h2>SYNTAX ERROR</h2>';
 		var_dump($syntax_error);
 		echo '</pre>';
-		*/
+		
 		
 		//WHITELIST PLACEHOLDER
 		//please note any custom functions and classes need to be passed to the whitelist (otherwise you cannot use whitelist)
@@ -153,14 +144,14 @@ class Home extends CI_Controller {
 		$execution_error = $this->phpsandboxer->get_parse_error();
 		$time_span = $this->phpsandboxer->get_time_span();
 		
-		/*
+		
 		echo '<pre><h2>EXECUTION ERROR</h2>';
 		var_dump($execution_error);
 		echo '</pre>';
 		echo '<pre><h2>EXECUTION TIME</h2>';
 		var_dump($time_span);
 		echo '</pre>';
-		*/
+		
 		
 		$this->_view_data += array(
 			'page_title'	=> $this->config->item('site_name', 'php_bounce'),
