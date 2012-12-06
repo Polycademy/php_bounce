@@ -12,10 +12,12 @@ class Bounce extends CI_Controller {
 		
 	}
 	
+	public function index(){
+		//show all missions here
+	}
+	
 	public function mission($id){
 	
-		
-		
 		$this->_view_data += array(
 			'page_title'	=> 'Missions PHP Bounce',
 			'code_submit'	=> $this->router->fetch_class(),

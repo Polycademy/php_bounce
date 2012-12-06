@@ -117,6 +117,18 @@ header{
 	}
 }
 
+ /* ==========================================================================
+   TABLES
+   ========================================================================== */
+.mission_table{
+	.parameters_td{
+		width: 30%;
+		pre{
+			overflow: auto;
+			height: 200px;
+		}
+	}
+}
 
  /* ==========================================================================
    CODE MIRROR
@@ -298,31 +310,30 @@ span.cm-invalidchar {color: #f00;}
 div.CodeMirror span.CodeMirror-matchingbracket {color: #0f0;}
 div.CodeMirror span.CodeMirror-nonmatchingbracket {color: #f22;}
 
-/* Port of TextMate's Blackboard theme */
+/* Ruby Blue theme */
 
-.cm-s-blackboard { background: #0C1021; color: #F8F8F8; }
-.cm-s-blackboard .CodeMirror-selected { background: #253B76 !important; }
-.cm-s-blackboard .CodeMirror-gutter { background: #0C1021; border-right: 0; }
-.cm-s-blackboard .CodeMirror-gutter-text { color: #888; }
-.cm-s-blackboard .CodeMirror-cursor { border-left: 1px solid #A7A7A7 !important; }
+.cm-s-rubyblue { font:13px/1.4em Trebuchet, Verdana, sans-serif; }	/* - customized editor font - */
 
-.cm-s-blackboard .cm-keyword { color: #FBDE2D; }
-.cm-s-blackboard .cm-atom { color: #D8FA3C; }
-.cm-s-blackboard .cm-number { color: #D8FA3C; }
-.cm-s-blackboard .cm-def { color: #8DA6CE; }
-.cm-s-blackboard .cm-variable { color: #FF6400; }
-.cm-s-blackboard .cm-operator { color: #FBDE2D;}
-.cm-s-blackboard .cm-comment { color: #AEAEAE; }
-.cm-s-blackboard .cm-string { color: #61CE3C; }
-.cm-s-blackboard .cm-string-2 { color: #61CE3C; }
-.cm-s-blackboard .cm-meta { color: #D8FA3C; }
-.cm-s-blackboard .cm-error { background: #9D1E15; color: #F8F8F8; }
-.cm-s-blackboard .cm-builtin { color: #8DA6CE; }
-.cm-s-blackboard .cm-tag { color: #8DA6CE; }
-.cm-s-blackboard .cm-attribute { color: #8DA6CE; }
-.cm-s-blackboard .cm-header { color: #FF6400; }
-.cm-s-blackboard .cm-hr { color: #AEAEAE; }
-.cm-s-blackboard .cm-link { color: #8DA6CE; }
+.cm-s-rubyblue { background: #112435; color: white; }
+.cm-s-rubyblue div.CodeMirror-selected { background: #38566F !important; }
+.cm-s-rubyblue .CodeMirror-gutter { background: #1F4661; border-right: 7px solid #3E7087; min-width:2.5em; }
+.cm-s-rubyblue .CodeMirror-gutter-text { color: white; }
+.cm-s-rubyblue .CodeMirror-cursor { border-left: 1px solid white !important; }
+
+.cm-s-rubyblue span.cm-comment { color: #999; font-style:italic; line-height: 1em; }
+.cm-s-rubyblue span.cm-atom { color: #F4C20B; }
+.cm-s-rubyblue span.cm-number, .cm-s-rubyblue span.cm-attribute { color: #82C6E0; }
+.cm-s-rubyblue span.cm-keyword { color: #F0F; }
+.cm-s-rubyblue span.cm-string { color: #F08047; }
+.cm-s-rubyblue span.cm-meta { color: #F0F; }
+.cm-s-rubyblue span.cm-variable-2, .cm-s-rubyblue span.cm-tag { color: #7BD827; }
+.cm-s-rubyblue span.cm-variable-3, .cm-s-rubyblue span.cm-def { color: white; }
+.cm-s-rubyblue span.cm-error { color: #AF2018; }
+.cm-s-rubyblue span.cm-bracket { color: #F0F; }
+.cm-s-rubyblue span.cm-link { color: #F4C20B; }
+.cm-s-rubyblue span.CodeMirror-matchingbracket { color:#F0F !important; }
+.cm-s-rubyblue span.cm-builtin, .cm-s-rubyblue span.cm-special { color: #FF9D00; }
+
 
 /* ==========================================================================
    RESPONSIVE

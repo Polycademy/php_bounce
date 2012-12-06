@@ -19,7 +19,7 @@
 				<? if(empty($missions)){ ?>
 					<h2>Sorry no missions to show!</h2>
 				<? }else{ ?>
-					<table class="table table-bordered table-condensed">
+					<table class="table table-bordered table-condensed mission_table">
 						<thead>
 							<tr>
 								<th scope="col"><strong>Mission Number</strong></th>
@@ -34,7 +34,7 @@
 								<th scope="row"><?=anchor('mission_editor/update/' . $mission['id'], $mission['mission_number'])?></th>
 								<td><?=$mission['title']?></td>
 								<td><?=$mission['description']?></td>
-								<td><pre><code><?=$mission['parameters']?></code></pre></td>
+								<td class="parameters_td"><pre><code><?=$mission['parameters']?></code></pre></td>
 							</tr>
 						<? } ?>
 						</tbody>

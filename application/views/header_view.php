@@ -30,9 +30,9 @@
 					</a>
 					<div class="nav-collapse collapse container">
 						<ul class="nav">
-							<li><a href="#home">PHP Bounce</a></li>
+							<li><?=anchor('home', 'PHP Bounce')?></li>
 							<li class="divider-vertical"></li>
-							<li><a href="#what_is">Mission 1</a></li>
+							<li><?=anchor('bounce', 'Mission List')?></li>
 							<li class="divider-vertical"></li>
 						</ul>
 					</div>

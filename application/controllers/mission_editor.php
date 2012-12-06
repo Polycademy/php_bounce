@@ -19,6 +19,10 @@ class Mission_editor extends CI_Controller {
 		//first lets get all the missions
 		//$missions is returned as an array
 		$missions = $this->Mission_model->get_all_missions();
+		//$missions['parameters'] returns as an array, so we need to export it to be shown
+		foreach($missions as &$mission){
+			$mission['parameters'] = var_export($mission['parameters'], true);
+		}
 		
 		$this->_view_data += array(
 			'page_title'	=> 'Missions Editor PHP Bounce',
@@ -37,7 +41,7 @@ class Mission_editor extends CI_Controller {
 			array(
 				'field'   => 'title',
 				'label'   => 'Mission Title',
-				'rules'   => 'trim|required|alpha_dash',
+				'rules'   => 'trim|required',
 			),
 			array(
 				'field'   => 'description',
@@ -70,6 +74,9 @@ class Mission_editor extends CI_Controller {
 			
 			if(!$this->Mission_model->add_mission($new_mission)){
 				$status = '<li>Was unable to add the mission to the database.</li>';
+				if($this->Mission_model->eval_error){
+					$status .= '<li>Eval Error: ' . $this->Mission_model->eval_error['message'] . ' on ' . $this->Mission_model->eval_error['line'] . '</li>';
+				}
 			}else{
 				$status = '<li>Entered information into the database! Thanks!</li>';
 			}
@@ -81,7 +88,7 @@ class Mission_editor extends CI_Controller {
 		}
 		
 		$this->_view_data += array(
-			'page_title'	=> 'Missions Editor Add PHP Bounce',
+			'page_title'	=> 'Missions Add Editor PHP Bounce',
 			'type'			=> 'add',
 			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method(),
 			'status'		=> $status,
@@ -106,9 +113,67 @@ class Mission_editor extends CI_Controller {
 	//UPDATE can DELETE aswell, so we have A DELETE BUTTON added in with the type
 	public function update($id){
 	
+		$status = false;
+		
+		$validation_rules = array(
+			array(
+				'field'   => 'title',
+				'label'   => 'Mission Title',
+				'rules'   => 'trim|required',
+			),
+			array(
+				'field'   => 'description',
+				'label'   => 'Mission Description',
+				'rules'   => 'trim|required',
+			),   
+			array(
+				'field'   => 'number',
+				'label'   => 'Mission Number',
+				'rules'   => 'trim|required|integer',
+			),
+			array(
+				'field'   => 'parameters',
+				'label'   => 'Mission Parameters',
+				'rules'   => 'required',
+			)
+		);
+		
+		$this->form_validation->set_rules($validation_rules);
+		
+		if($this->form_validation->run() == true){		
+		
+			$updated_mission = array(
+				'title'			=> $this->input->post('title', true),
+				'description'	=> $this->input->post('description'),
+				'mission_number'=> $this->input->post('number', true),
+				'parameters'	=> $this->input->post('parameters'),
+			);
+			
+			if(!$this->Mission_model->update_mission($id, $updated_mission)){
+				$status = '<li>Was unable to update mission #' . $id . '</li>';
+				if($this->Mission_model->eval_error){
+					$status .= '<li>Eval Error: ' . $this->Mission_model->eval_error['message'] . ' on ' . $this->Mission_model->eval_error['line'] . '</li>';
+				}
+			}else{
+				$status = '<li>Updated mission #' . $id . '! Thanks!</li>';
+			}
+		
+		}else{
+		
+			$status = validation_errors('<li>', '</li>');
+			
+		}
+	
+		//get the data
+		$mission_data = $this->Mission_model->get_mission($id);
+		//$missions['parameters'] returns as an array, so we need to export it to be shown
+		$mission_data['parameters'] = var_export($mission_data['parameters'], true);
+		
 		$this->_view_data += array(
-			'page_title'	=> 'Missions Editor Update PHP Bounce',
+			'page_title'	=> 'Missions Update Editor PHP Bounce',
 			'type'			=> 'update',
+			'mission_data'	=> $mission_data,
+			'status'		=> (empty($mission_data)) ? '<li>There isn\'t any mission with the id #' . $id . '. Go back, you cannot update here.</li>' : $status,
 			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method() . '/' . $id,
 		);
 	

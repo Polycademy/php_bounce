@@ -19,7 +19,7 @@
 					indentWithTabs: true,
 					enterMode: "keep",
 					tabMode: "shift",
-					theme: "blackboard",
+					theme: "rubyblue",
 					autoClearEmptyLines: true,
 					autofocus: true,
 				});
