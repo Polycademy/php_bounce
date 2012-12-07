@@ -113,7 +113,7 @@ class Execute_model extends CI_Model {
 		
 			//oh no possible error (if there is an error, cancel the execution and send this out)
 			$this->_errors[] = array(
-				'message'	=> 'Parse Error: ' . $e->getMessage();
+				'message'	=> 'Parse Error: ' . $e->getMessage(),
 			);
 			
 			return false;
@@ -128,7 +128,7 @@ class Execute_model extends CI_Model {
 		if(empty($this->_mission_graph) OR empty($this->_parameters)){
 		
 			$this->_errors[] = array(
-				'message'	=> 'The mission graph or parameters has not been set. Cannot do a mission check.';
+				'message'	=> 'The mission graph or parameters has not been set. Cannot do a mission check.',
 			);
 			
 			return false;
@@ -193,7 +193,7 @@ class Execute_model extends CI_Model {
 			),
 		);
 		
-		if($options({
+		if($options){
 			$sandbox_options = array_merge($sandbox_options, $options);
 		}
 		

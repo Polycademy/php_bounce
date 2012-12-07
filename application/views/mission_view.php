@@ -14,7 +14,7 @@
 					<div class="span8 mission_execution">
 						<section class="editor_container">
 							<h4>Code Pad</h4>
-							<?= form_open($code_submit, array('class'=>'form-horizontal')) ?>
+							<?= form_open($code_submit, array('class'=>'form-horizontal mission_code_form')) ?>
 								<?= form_textarea(array('name' => 'code', 'id' => 'codemirror')) ?>
 								<?= form_submit(array('name'=>'submit', 'type'=>'submit', 'value'=>'Execute!', 'class'=>'btn btn-primary code_submit')) ?>
 							<?= form_close() ?>
@@ -41,6 +41,12 @@
 						autoClearEmptyLines: true,
 						autofocus: true,
 					});
+				</script>
+				<script>
+					//passing variables from PHP to js
+					var $bounce_base_url = "<?= base_url() ?>";
+					//var $bounce_mission_id = "<?= $mission_data['id'] ?>";
+					var $ajax_path = "<?= $code_submit ?>";
 				</script>
 			<? }else{ ?>
 				<h1>There's no mission here!</h1>

@@ -119,7 +119,9 @@ header{
 		border: 1px solid #d1d1d1;
 		.editor_container{
 			margin: 10px 20px;
-			
+			.CodeMirror-scroll{
+				height: 280px;
+			}
 			.code_submit{
 				margin: 5px;
 				float: right;
@@ -130,7 +132,7 @@ header{
 			margin: 10px 20px;
 			overflow: auto;
 			pre{
-				height: 200px;
+				height: 120px;
 			}
 		}
 	}
@@ -157,6 +159,14 @@ header{
 	text-align: center;
 	ul{
 		display: inline-block;
+	}
+}
+
+.code_editor{
+	.editor_container{
+		.CodeMirror-scroll{
+			height: 400px;
+		}
 	}
 }
 
@@ -188,10 +198,7 @@ header{
 }
 
 .CodeMirror-scroll {
-
-	
 	overflow: auto;
-	height: 200px;
 	/* This is needed to prevent an IE[67] bug where the scrolled content
 	is visible outside of the scrolling box. */
 	position: relative;
