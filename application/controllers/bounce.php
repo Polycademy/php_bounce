@@ -50,8 +50,7 @@ class Bounce extends CI_Controller {
 		$mission_data = $this->Mission_model->get_mission($id);
 		if(empty($mission_data) OR empty($test_code)){
 		
-			$errors = 'No data.';
-			$this->_mission_error_processing($errors);
+			$this->_mission_error_processing('No data is available from this mission.');
 			return false;
 			
 		}
@@ -62,6 +61,8 @@ class Bounce extends CI_Controller {
 			'my_class',
 		);
 		
+		$this->firephp->log($test_code, 'TEST CODE');
+		
 		//initiate the options
 		if(!$this->Execute_model->init_options($test_code, $this->config->item('php_binary'), $mission_data['parameters'], $custom_whitelist)){
 		
@@ -70,12 +71,16 @@ class Bounce extends CI_Controller {
 			
 		}
 		
+		$this->firephp->log('Passed Initiating Options');
+		
 		if(!$this->Execute_model->lint()){
 		
 			$this->_mission_error_processing();
 			return false;
 			
 		}
+		
+		$this->firephp->log('Passed Lint');
 		
 		if(!$this->Execute_model->whitelist()){
 		
@@ -84,6 +89,8 @@ class Bounce extends CI_Controller {
 		
 		}
 		
+		$this->firephp->log('Passed Whitelist');
+		
 		if(!$this->Execute_model->parse()){
 		
 			$this->_mission_error_processing();
@@ -91,20 +98,68 @@ class Bounce extends CI_Controller {
 		
 		}
 		
+		$this->firephp->log('Passed Parse');
+		
+		//do mission check
+		if(!$this->Execute_model->mission_check()){
+		
+			$this->_mission_error_processing();
+			return false;
+			
+		}
+		
+		$this->firephp->log('Passed Mission Check');
+		
 		$output = $this->Execute_model->execute();
 		
-		if(!output){
+		if(!$output){
 		
 			$this->_mission_error_processing();
 			return false;
 		
 		}
 		
+		$this->firephp->log('Passed Output');
+		
 		//output is just that output, but errors will require more processing
 		//errors may be just line errors, array of many errors or line error + line number to highlight
 		
 		//TODOOOOO!O!!!
 		//THEREFORE we need to json encode the data and process them in javascript, not return them a template!!!
+		
+		//errors need to be like this
+		/*
+			=> these output to just the line
+			array(
+				0 => 'error message',
+				1 => 'error message',
+			);
+			
+			=>these need to be encoded and decoded
+			
+[0] =>
+array(
+
+['raw'] =>
+'PHP Parse error: syntax error, unexpected end of file in - on line 1'
+['type'] =>
+'PHP Parse error'
+['message'] =>
+'syntax error, unexpected end of file'
+['file'] =>
+'PHP Bounce'
+['line'] =>
+1
+) 
+			
+			array(
+				0 => array(
+					'type'		=> PHP Parse Error,
+					'message'	=> 'Blah',
+					'line'		=> 1,
+				);
+			);
+		*/
 		
 		
 		$this->_view_data += array(
@@ -116,11 +171,16 @@ class Bounce extends CI_Controller {
 	
 	}
 	
-	protected function _mission_error_processing($errors){
+	//$errors is for passing in custom errors
+	protected function _mission_error_processing($errors = false){
 	
 		$errors = (!empty($errors)) ? $errors : $this->Execute_model->get_errors();
 	
-		var_dump($errors);
+		$this->firephp->log($errors);
+		
+		if(is_string($errors)){
+			$errors = array($errors);
+		}
 		
 		//these errors need to be processed
 		$this->_view_data += array(

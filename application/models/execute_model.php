@@ -21,16 +21,12 @@ class Execute_model extends CI_Model {
 	public function init_options($test_code, $binary, $parameters = array(), $custom_whitelist = ''){
 	
 		if(empty($test_code) OR empty($binary)){
-			$this->_errors[] = array(
-				'message'	=> 'Requires test code and binary location.',
-			);
+			$this->_errors[] = 'Requires test code and binary location.';
 			return false;
 		}
 		
 		if(!file_exists($binary) || !is_executable($binary)) {
-			$this->_errors[] = array(
-				'message'	=> 'Binary not found!',
-			);
+			$this->_errors[] = 'Binary not found!';
 			return false;
 		}
 		
@@ -43,10 +39,14 @@ class Execute_model extends CI_Model {
 		$this->_binary = $binary;
 		$this->_custom_whitelist = $custom_whitelist;
 		$this->_parameters = $parameters;
+		
+		return true;
 	
 	}
 	
 	public function get_errors(){
+	
+		#$this->firephp->log($this->_errors, 'Errors logged from execute_model');
 	
 		if(!empty($this->_errors)){
 			return $this->_errors;
@@ -62,9 +62,11 @@ class Execute_model extends CI_Model {
 		
 		//if failed lint check
 		if(!$this->phplint->lint_string($this->_test_code, 'PHP Bounce')){
-			//then get the parse error (array)
+		
+			//lint return an array of multidimensions with line and messages
 			$this->_errors[] = $this->phplint->get_parse_error();
 			return false;
+		
 		}
 		
 		return true;
@@ -76,8 +78,13 @@ class Execute_model extends CI_Model {
 	
 		$this->phpwhitelist->init_options($this->_test_code, $this->_custom_whitelist);
 		
-		if($this->phpwhitelist->run_whitelist()){
-			$this->_errors[] = $this->phpwhitelist->get_errors();
+		if(!$this->phpwhitelist->run_whitelist()){
+
+			//whitelist returns an array of errors
+			foreach($this->phpwhitelist->get_errors() as $whitelist_error){
+				$this->_errors[] = $whitelist_error;
+			}
+						
 			return false;
 		}
 		
@@ -111,10 +118,9 @@ class Execute_model extends CI_Model {
 			
 		}catch(PHPParser_Error $e){
 		
-			//oh no possible error (if there is an error, cancel the execution and send this out)
-			$this->_errors[] = array(
-				'message'	=> 'Parse Error: ' . $e->getMessage(),
-			);
+			//single one line error here
+			//unlikely to happen if lint has passed and whitelist passed...
+			$this->_errors[] = 'Parse Error: ' . $e->getMessage();
 			
 			return false;
 		
@@ -127,10 +133,7 @@ class Execute_model extends CI_Model {
 	
 		if(empty($this->_mission_graph) OR empty($this->_parameters)){
 		
-			$this->_errors[] = array(
-				'message'	=> 'The mission graph or parameters has not been set. Cannot do a mission check.',
-			);
-			
+			$this->_errors[] = 'The mission graph or parameters has not been set. Cannot do a mission check.';
 			return false;
 			
 		}
@@ -138,8 +141,14 @@ class Execute_model extends CI_Model {
 		$this->missionchecker->init_options($this->_mission_graph, $this->_parameters);
 		
 		if(!$this->missionchecker->graph_check()){
-			$this->_errors[] = $this->missionchecker->get_error_messages();
+		
+			//Simple line error (there is no line number here)
+			//Will return an array of messages
+			foreach($this->missionchecker->get_error_messages() as $mission_error){
+				$this->_errors[] = $mission_error;
+			}
 			return false;
+			
 		}
 		
 		return true;

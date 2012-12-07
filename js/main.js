@@ -50,7 +50,7 @@ $(function(){
 			// callback handler that will be called on success
 			success: function(response, textStatus, jqXHR){
 				// log a message to the console
-				console.log("Hooray, it worked!");
+				//console.log("Hooray, it worked!");
 			},
 			// callback handler that will be called on error
 			error: function(jqXHR, textStatus, errorThrown){

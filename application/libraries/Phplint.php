@@ -95,7 +95,8 @@ class Phplint{
 		}
 		
 	}
-
+	
+	//produces a line error array
 	public function get_parse_error() {
 	
 		return $this->_error;
