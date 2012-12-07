@@ -48,13 +48,21 @@ class Bounce extends CI_Controller {
 		//get the mission data, code and parameters
 		$test_code = $this->input->post('code');
 		$mission_data = $this->Mission_model->get_mission($id);
-		if(empty($mission_data) OR empty($test_code)){
+		if(empty($mission_data)){
 		
-			$this->_mission_error_processing('No data is available from this mission.');
+			$this->_mission_error_processing('There is no data at mission #' . $id);
 			return false;
 			
 		}
 		
+		if(empty($test_code)){
+		
+			$this->_mission_error_processing('No code to execute!');
+			return false;
+			
+		}
+		
+		//THIS IS GOING TO BE DETECTED FROM THE DATABASE!
 		//whitelist of custom function names + class names to allow to be used
 		$custom_whitelist = array(
 			'my_function',
@@ -163,9 +171,9 @@ array(
 		
 		
 		$this->_view_data += array(
-			'content'	=> $output,
+			'response'	=> $output,
 		);
-		$this->load->view('mission_ajax_execute_view', $this->_view_data);
+		$this->load->view('json_view', $this->_view_data);
 		
 		return true;
 	
@@ -176,17 +184,16 @@ array(
 	
 		$errors = (!empty($errors)) ? $errors : $this->Execute_model->get_errors();
 	
-		$this->firephp->log($errors);
+		#$this->firephp->log($errors);
 		
 		if(is_string($errors)){
 			$errors = array($errors);
 		}
 		
-		//these errors need to be processed
 		$this->_view_data += array(
-			'content'	=> $errors,
+			'response'	=> $errors,
 		);
-		$this->load->view('mission_ajax_execute_view', $this->_view_data);
+		$this->load->view('json_view', $this->_view_data);
 		
 		return true;
 		
