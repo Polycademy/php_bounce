@@ -91,7 +91,7 @@ class Bounce extends CI_Controller {
 		
 		}
 		
-		$output = $this->Execute_model->execute()
+		$output = $this->Execute_model->execute();
 		
 		if(!output){
 		
