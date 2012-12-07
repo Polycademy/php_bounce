@@ -157,6 +157,11 @@ class Missionchecker{
 			
 		}
 		
+		//if errors, then return false
+		if(!empty($this->_errors)){
+			return false;
+		}
+		
 		return true;
 	
 	}

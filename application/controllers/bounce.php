@@ -13,17 +13,48 @@ class Bounce extends CI_Controller {
 	}
 	
 	public function index(){
+	
 		//show all missions here
+		//$missions is returned as an array
+		$missions = $this->Mission_model->get_all_missions();
+		
+		$this->_view_data += array(
+			'page_title'	=> 'Mission List PHP Bounce',
+			'missions'		=> $missions,
+		);
+	
+		$this->_load_views('bounce_view');
+		
 	}
 	
 	public function mission($id){
 	
+		$mission_data = $this->Mission_model->get_mission($id);
+	
 		$this->_view_data += array(
 			'page_title'	=> 'Missions PHP Bounce',
-			'code_submit'	=> $this->router->fetch_class(),
+			'code_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method() . '/' . $id,
+			'mission_data'	=> $mission_data,
 		);
 	
-		$this->_load_views('bounce_view');
+		$this->_load_views('mission_view');
+	
+	}
+	
+	//do some ajax loaded stuff...
+	public function mission_ajax_execute($id){
+	
+		//get the id(check if the mission exists), return false (if no data)
+		//get the mission data and parameters
+		//start executing the code->
+		//pass everything into execute_model
+		//lint, whitelist, parse, missionchecker, execute (THESE should be in a model)
+	
+		//returns a json encoded array
+		$this->load->view('mission_ajax_execute_view'); //should be used as data and not output
+		
+		//array with 2 values, line number & error
+		//or array with output
 	
 	}
 	

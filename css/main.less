@@ -79,17 +79,60 @@ header{
 }
 
  /* ==========================================================================
-   MAIN SECTIONS
+   MISSION LIST
+   ========================================================================== */
+.bounce_list{
+	font-size: 40px;
+	line-height: 40px;
+	.specific_mission{
+		text-align: center;
+		background: -moz-linear-gradient(top,  rgba(209,209,209,1) 0%, rgba(158,147,142,0.9) 100%);
+		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(209,209,209,1)), color-stop(100%,rgba(158,147,142,0.9)));
+		background: -webkit-linear-gradient(top,  rgba(209,209,209,1) 0%,rgba(158,147,142,0.9) 100%);
+		background: -o-linear-gradient(top,  rgba(209,209,209,1) 0%,rgba(158,147,142,0.9) 100%);
+		background: -ms-linear-gradient(top,  rgba(209,209,209,1) 0%,rgba(158,147,142,0.9) 100%);
+		background: linear-gradient(to bottom,  rgba(209,209,209,1) 0%,rgba(158,147,142,0.9) 100%);
+		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1d1d1', endColorstr='#e69e938e',GradientType=0 );
+		border: 1px solid #e3e3e3;
+		padding: 20px;
+		margin: 20px;
+		
+		a{
+			color: #6B4E40;
+		}
+		
+	}
+}
+
+ /* ==========================================================================
+   MAIN SECTIONS FOR INTERACTIVE SHELL
    ========================================================================== */
 .main_sections{
 	.mission_parameters{
-		overflow: auto;
+		border: 1px solid #d1d1d1;
+		.parameter_container{
+			margin: 10px 20px;
+			overflow: auto;
+		}
 	}
-	.code_editor{
-
-	}
-	.output_zone{
-		overflow: auto;
+	.mission_execution{
+		border: 1px solid #d1d1d1;
+		.editor_container{
+			margin: 10px 20px;
+			
+			.code_submit{
+				margin: 5px;
+				float: right;
+			}
+		}
+		.output_container{
+			clear: both;
+			margin: 10px 20px;
+			overflow: auto;
+			pre{
+				height: 200px;
+			}
+		}
 	}
 }
 
@@ -134,6 +177,8 @@ header{
    CODE MIRROR
    ========================================================================== */
  .CodeMirror {
+	.border_radius(10px);
+	border: 2px solid #90a9ba;
 	line-height: 1em;
 	font-family: monospace;
 	/* Necessary so the scrollbar can be absolutely positioned within the wrapper on Lion. */
@@ -143,8 +188,10 @@ header{
 }
 
 .CodeMirror-scroll {
+
+	
 	overflow: auto;
-	height: 400px;
+	height: 200px;
 	/* This is needed to prevent an IE[67] bug where the scrolled content
 	is visible outside of the scrolling box. */
 	position: relative;

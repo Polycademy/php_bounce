@@ -102,6 +102,10 @@ class Phpwhitelist{
 		
 		}
 		
+		if(!empty($this->_errors)){
+			return false;
+		}
+		
 		return true;
 	
 	}

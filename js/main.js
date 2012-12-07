@@ -24,9 +24,9 @@ $(function(){
 		}).height(maxHeight);
 	}
 	
-	equalise_height(".main_sections div section");
+	equalise_height(".main_sections > div");
 	$(window).resize(function() { 
-		equalise_height(".main_sections div section");
+		equalise_height(".main_sections > div");
 	});
 	
 });

@@ -140,7 +140,7 @@ class Mission_editor extends CI_Controller {
 		
 		$this->form_validation->set_rules($validation_rules);
 		
-		if($this->form_validation->run() == true){		
+		if($this->form_validation->run() == true){
 		
 			$updated_mission = array(
 				'title'			=> $this->input->post('title', true),
