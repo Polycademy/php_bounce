@@ -20,7 +20,6 @@
 							<?= form_close() ?>
 						</section>
 						<section class="output_container">
-							<h4>Results</h4>
 							<pre>BLAHLABLAH</pre>
 						</section>
 					</div>
