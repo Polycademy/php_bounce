@@ -44,7 +44,6 @@
 				<script>
 					//passing variables from PHP to js
 					var $bounce_base_url = "<?= base_url() ?>";
-					//var $bounce_mission_id = "<?= $mission_data['id'] ?>";
 					var $ajax_path = "<?= $code_submit ?>";
 				</script>
 			<? }else{ ?>

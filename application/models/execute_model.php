@@ -128,6 +128,13 @@ class Execute_model extends CI_Model {
 	
 	}
 	
+	public function get_parsed_mission_graph(){
+		if(empty($this->_mission_graph)){
+			return false;
+		}
+		return $this->_mission_graph;
+	}
+	
 	//mission_check
 	public function mission_check(){
 	

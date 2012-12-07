@@ -28,6 +28,7 @@ class Mission_model extends CI_Model {
 					'title'				=> $row->title,
 					'description'		=> $row->description,
 					'parameters'		=> $this->_parameter_decode($row->parameters),
+					'whitelist'			=> $row->whitelist,
 				);
 				
 			}
@@ -92,6 +93,7 @@ class Mission_model extends CI_Model {
 				'title'				=> $row->title,
 				'description'		=> $row->description,
 				'parameters'		=> $this->_parameter_decode($row->parameters),
+				'whitelist'			=> $row->whitelist,
 			);
 		
 		}

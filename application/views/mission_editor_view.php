@@ -25,6 +25,7 @@
 								<th scope="col"><strong>Mission Number</strong></th>
 								<th scope="col">Title</th>
 								<th scope="col">Description</th>
+								<th scope="col">Whitelist</th>
 								<th scope="col">Parameters</th>
 							</tr>
 						</thead>
@@ -34,6 +35,7 @@
 								<th scope="row"><?=anchor('mission_editor/update/' . $mission['id'], $mission['mission_number'])?></th>
 								<td><?=$mission['title']?></td>
 								<td><?=$mission['description']?></td>
+								<td><?=$mission['whitelist']?></td>
 								<td class="parameters_td"><pre><code><?=$mission['parameters']?></code></pre></td>
 							</tr>
 						<? } ?>

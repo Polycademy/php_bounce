@@ -38,6 +38,15 @@
 									'value'	=> (!empty($mission_data['description'])) ? $mission_data['description'] : set_value('description')
 								)
 							) ?>
+							<?= form_label('Mission Whitelist (optional & comma separated)', 'mission_description_input') ?>
+							<?= form_input(
+								array(
+									'name'	=> 'whitelist',
+									'class'	=> 'input-block-level',
+									'id'	=> 'mission_whitelist_input',
+									'value'	=> (!empty($mission_data['whitelist'])) ? $mission_data['whitelist'] : set_value('whitelist')
+								)
+							) ?>
 							<?= form_label('Mission Number', 'mission_number_input') ?>
 							<?= form_input(
 								array(
@@ -64,6 +73,26 @@
 				</div>
 				<?= form_submit(array('name'=>'submit', 'type'=>'submit', 'value'=>'Submit!', 'class'=>'btn btn-primary')) ?>
 			<?= form_close() ?>
+			
+			<div class="php_parse_xml">
+				<h4>Enter code here to see the XML so you can construct the path.</h4>
+				<?= form_open($xml_submit, array('class'=>'php_parse_xml_form')) ?>
+					<?= form_textarea(
+						array(
+							'name'	=> 'code',
+							'id'	=> 'codemirror_xml',
+						)
+					) ?>
+					<?= form_submit(array('name'=>'submit', 'type'=>'submit', 'value'=>'Show XML Parse', 'class'=>'btn btn-primary')) ?>
+				<?= form_close() ?>
+				<div class="xml_results">
+					<pre>
+						<code>
+							HERE SHOULD BE XML
+						</code>
+					</pre>
+				</div>
+			</div>
 			<div class="array_example">
 				<h4>Array Example</h4>
 				<pre>
@@ -103,5 +132,21 @@ array(
 					theme: "rubyblue",
 					autoClearEmptyLines: true,
 				});
+				var editor = CodeMirror.fromTextArea(document.getElementById("codemirror_xml"), {
+					lineNumbers: true,
+					matchBrackets: true,
+					mode: "text/x-php",
+					indentUnit: 4,
+					indentWithTabs: true,
+					enterMode: "keep",
+					tabMode: "shift",
+					theme: "rubyblue",
+					autoClearEmptyLines: true,
+				});
+			</script>
+			<script>
+				//passing variables from PHP to js
+				var $parse_base_url = "<?= base_url() ?>";
+				var $ajax_path = "<?= $xml_submit ?>";
 			</script>
 		</div>

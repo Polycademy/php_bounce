@@ -9,6 +9,7 @@ class Mission_editor extends CI_Controller {
 		parent::__construct();
 		$this->_view_data = $this->config->item('php_bounce');
 		$this->load->model('Mission_model'); //models are capitalised in classes, not in files, whereas libraries are capitalised in files but not in classes... weird
+		$this->load->model('Execute_model');
 		
 	}
 	
@@ -54,6 +55,11 @@ class Mission_editor extends CI_Controller {
 				'rules'   => 'trim|required|integer|callback_mission_number_check',
 			),
 			array(
+				'field'   => 'whitelist',
+				'label'   => 'Mission Whitelist',
+				'rules'   => '',
+			),
+			array(
 				'field'   => 'parameters',
 				'label'   => 'Mission Parameters',
 				'rules'   => 'required',
@@ -70,6 +76,7 @@ class Mission_editor extends CI_Controller {
 				'description'	=> $this->input->post('description'),
 				'mission_number'=> $this->input->post('number', true),
 				'parameters'	=> $this->input->post('parameters'),
+				'whitelist'		=> trim($this->input->post('whitelist'), ','),
 			);
 			
 			if(!$this->Mission_model->add_mission($new_mission)){
@@ -91,6 +98,7 @@ class Mission_editor extends CI_Controller {
 			'page_title'	=> 'Missions Add Editor PHP Bounce',
 			'type'			=> 'add',
 			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method(),
+			'xml_submit'	=> $this->router->fetch_class() . '/mission_xml_parsing',
 			'status'		=> $status,
 		);
 	
@@ -132,6 +140,11 @@ class Mission_editor extends CI_Controller {
 				'rules'   => 'trim|required|integer',
 			),
 			array(
+				'field'   => 'whitelist',
+				'label'   => 'Mission Whitelist',
+				'rules'   => '',
+			),
+			array(
 				'field'   => 'parameters',
 				'label'   => 'Mission Parameters',
 				'rules'   => 'required',
@@ -147,10 +160,11 @@ class Mission_editor extends CI_Controller {
 				'description'	=> $this->input->post('description'),
 				'mission_number'=> $this->input->post('number', true),
 				'parameters'	=> $this->input->post('parameters'),
+				'whitelist'		=> trim($this->input->post('whitelist'), ','),
 			);
 			
 			if(!$this->Mission_model->update_mission($id, $updated_mission)){
-				$status = '<li>Was unable to update mission #' . $id . '</li>';
+				$status = '<li>No update was made to mission #' . $id . '</li>';
 				if($this->Mission_model->eval_error){
 					$status .= '<li>Eval Error: ' . $this->Mission_model->eval_error['message'] . ' on ' . $this->Mission_model->eval_error['line'] . '</li>';
 				}
@@ -175,10 +189,60 @@ class Mission_editor extends CI_Controller {
 			'mission_data'	=> $mission_data,
 			'status'		=> (empty($mission_data)) ? '<li>There isn\'t any mission with the id #' . $id . '. Go back, you cannot update here.</li>' : $status,
 			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method() . '/' . $id,
+			'xml_submit'	=> $this->router->fetch_class() . '/mission_xml_parsing',
 		);
 	
 		$this->_load_views('mission_editor_addupdate_view');
 	
+	}
+	
+	//for ajax output of xml
+	public function mission_xml_parsing(){
+	
+		$code = $this->input->post('code');
+		
+		if(empty($code)){
+			$this->_execute_error_processing('No code was parsed into XML');
+			return false;
+		}
+		
+		if(!$this->Execute_model->init_options($code, $this->config->item('php_binary'))){
+			$this->_execute_error_processing();
+			return false;
+		}
+		
+		if(!$this->Execute_model->parse()){
+			$this->_execute_error_processing();
+			return false;
+		}
+		
+		$mission_graph = $this->Execute_model->get_parsed_mission_graph();
+		
+		$this->_view_data += array(
+			'response'	=> $mission_graph,
+		);
+		$this->load->view('xml_view', $this->_view_data);
+		
+	}
+	
+	//$errors is for passing in custom errors
+	protected function _execute_error_processing($errors = false){
+	
+		$errors = (!empty($errors)) ? $errors : $this->Execute_model->get_errors();
+	
+		#$this->firephp->log($errors);
+		
+		if(is_array($errors)){
+			$errors = implode($errors);
+		}
+		
+		$this->_view_data += array(
+			'response'	=> $errors,
+		);
+		$this->load->view('xml_view', $this->_view_data);
+		
+		return true;
+		
 	}
 	
 	private function _load_views($main){

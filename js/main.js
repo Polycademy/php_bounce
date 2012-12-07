@@ -72,5 +72,46 @@ $(function(){
 		event.preventDefault();
 		
 	});
+	
+	$(".php_parse_xml_form").submit(function(event){
+	
+		//setting up variables
+		// find all the inputs and seralise them
+		var $form = $(this), $inputs = $form.find("textarea"), serializedData = $form.serialize();
+		
+		// let's disable the inputs for the duration of the ajax request
+		$inputs.attr("disabled", "disabled");
+		
+		
+		// fire off the request to /form.php
+		$.ajax({
+			url: $parse_base_url + $ajax_path,
+			type: "post",
+			data: serializedData,
+			// callback handler that will be called on success
+			success: function(response, textStatus, jqXHR){
+				// log a message to the console
+				//console.log("Hooray, it worked!");
+			},
+			// callback handler that will be called on error
+			error: function(jqXHR, textStatus, errorThrown){
+				// log the error to the console
+				console.log(
+					"The following error occured: "+
+					textStatus, errorThrown
+				);
+			},
+			// callback handler that will be called on completion
+			// which means, either on success or error
+			complete: function(){
+				// enable the inputs
+				$inputs.removeAttr("disabled");
+			}
+		});
+
+		// prevent default posting of form
+		event.preventDefault();
+		
+	});
 
 });

@@ -48,6 +48,8 @@ class Bounce extends CI_Controller {
 		//get the mission data, code and parameters
 		$test_code = $this->input->post('code');
 		$mission_data = $this->Mission_model->get_mission($id);
+		
+		//is there even a mission?
 		if(empty($mission_data)){
 		
 			$this->_mission_error_processing('There is no data at mission #' . $id);
@@ -55,6 +57,7 @@ class Bounce extends CI_Controller {
 			
 		}
 		
+		//was there any code to test?
 		if(empty($test_code)){
 		
 			$this->_mission_error_processing('No code to execute!');
@@ -62,17 +65,16 @@ class Bounce extends CI_Controller {
 			
 		}
 		
-		//THIS IS GOING TO BE DETECTED FROM THE DATABASE!
-		//whitelist of custom function names + class names to allow to be used
-		$custom_whitelist = array(
-			'my_function',
-			'my_class',
-		);
+		//create the whitelist, create array
+		$whitelist = false;
+		if(!empty($mission_data['whitelist'])){
+			$whitelist = explode(',', $mission_data['whitelist']);
+		}
 		
 		$this->firephp->log($test_code, 'TEST CODE');
 		
 		//initiate the options
-		if(!$this->Execute_model->init_options($test_code, $this->config->item('php_binary'), $mission_data['parameters'], $custom_whitelist)){
+		if(!$this->Execute_model->init_options($test_code, $this->config->item('php_binary'), $mission_data['parameters'], $whitelist)){
 		
 			$this->_mission_error_processing();
 			return false;
