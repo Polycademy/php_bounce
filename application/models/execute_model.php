@@ -8,7 +8,7 @@ class Execute_model extends CI_Model {
 	private $_custom_whitelist = '';
 	private $_parameters = array();
 	private $_mission_graph = false;
-	private $_execution_timespan;
+	public $execution_timespan;
 
 	public function __construct(){
 	
@@ -204,7 +204,7 @@ class Execute_model extends CI_Model {
 		
 		//if true, then it worked!
 		if($execution_output = $this->phpsandboxer->execute_code($this->_test_code, 'PHP Bounce')){
-			
+			$this->execution_timespan = $this->phpsandboxer->get_time_span();		
 			return $execution_output;
 		}else{
 			$this->errors[] = array(
@@ -212,9 +212,7 @@ class Execute_model extends CI_Model {
 			);
 			return false;
 		}
-		
-		$time_span = $this->phpsandboxer->get_time_span();
-	
+			
 	}
 	
 }
