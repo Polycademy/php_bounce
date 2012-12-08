@@ -23,6 +23,8 @@ class Missionchecker{
 		$this->_graph = $graph;
 		
 		$this->_parameters = $this->_build_xpaths($parameters);
+		
+		#var_dump($this->_parameters);
 			
 	}
 	
@@ -31,30 +33,31 @@ class Missionchecker{
 		//passing by reference so we can edit the value
 		foreach($parameters as $test_name => &$test_block){
 		
-			foreach($test_block['paths'] as $base_path => $children){
+			//each number corresponds to a particular error test section
+			foreach($test_block['paths'] as $number => $value){
+		
+				foreach($value as $base_path => $children){
+				
+					//if the children is an array, then we need to a recursive loop to build up all the children
+					if(is_array($children)){
+					
+						$child_paths = $this->_build_child_paths($children);
+						$full_path = $base_path . '[' . $child_paths . ']';
+						$test_block['paths'][$number] = $full_path;			
+					
+					//if children is not an array, then just the children as the path (the base_path is more likely to be just a key, and the children should be the full path
+					}else{
+					
+						//the full path would be just the children + the the first value (because there would only be 1 value to test against)
+						$test_block['paths'][$number] = $children . '[text() =%s]';
+					
+					}
+					
+				}//END PATH/MULTIBRANCH
 			
+			}//END PATHS LOOP
 			
-				//if the children is an array, then we need to a recursive loop to build up all the children
-				if(is_array($children)){
-				
-					$child_paths = $this->_build_child_paths($children);
-					$full_path = $base_path . '[' . $child_paths . ']';
-					$test_block['paths'][$base_path] = $full_path;			
-				
-				//if children is not an array, then just the children as the path (the base_path is more likely to be just a key, and the children should be the full path
-				}else{
-				
-					//the full path would be just the children + the the first value (because there would only be 1 value to test against)
-					//what happens when you don't want to test the value? can there be a character for any value?
-					$test_block['paths'][$base_path] = $children . '[text() =%s]';
-				
-				}
-				
-				
-			}
-			
-
-			//we're wrapping any non * tests with apostrophes! Like 'testvalue'
+			//we're wrapping any value tests in apostrophes like 'testvalue'
 			foreach($test_block['tests'] as &$check_values){
 				foreach($check_values as &$value){
 					$value = '\'' . $value . '\'';
@@ -63,14 +66,14 @@ class Missionchecker{
 			
 			//here we are doing 2 things
 			//the first is combine the error messages with the xpath queries into one single new array called "map"
-			//we are also converting the type identifiers into their correct test values
+			//we are also converting the type identifiers (vsprintf) into their correct test values
 			$map = array_combine(array_keys($test_block['tests']), $test_block['paths']);
 			foreach($map as $key => &$value){
 				$value = vsprintf($value, $test_block['tests'][$key]);
 			}
 			$test_block['map'] = $map;
 			
-		}
+		}//END TESTBLOCK LOOP
 		
 		return $parameters;
 	

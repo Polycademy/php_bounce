@@ -103,29 +103,35 @@
 //each test's key is the error message
 //each test's values is an array of an ordered value set that is meant to be passed to the paths
 //the number of values need to correspond with the number of branch endpoints for each branch
-$mission_parameters = array(
-	'variable_declaration'	=> array(
-		'paths'	=> array(
-			//basepath is single endpoint, its array is multiendpoint
-			'//node:Expr_Assign' => array(
-				'subNode:var/node:Expr_Variable' => array(
-					'subNode:name/scalar:string',
+
+	$mission_parameters = array(
+		'variable_declaration'	=> array(
+			'paths'	=> array(
+				0 => array(
+					'//node:Expr_Assign' => array(
+						'subNode:var/node:Expr_Variable' => array(
+							'subNode:name' => array(
+								'scalar:string'
+							),
+						),
+						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
+					),
 				),
-				'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
+				1 => array(
+						'//node:Expr_Assign/subNode:var/node:Expr_Variable/subNode:name/scalar:string',
+				),
 			),
-			'//node:Expr_Assign/subNode:var/node:Expr_Variable/subNode:name/scalar:string',
+			'tests'	=> array(
+				'Error, you need to make sure to declare a variable called [[my_chinese_surname]] with the value [[Qiu]]' => array(
+					'my_chinese_surname',
+					'Qiu'
+				),
+				'Error, you need to make sure to declare a variable called [[my_chinese_surname]]' => array(
+					'my_chinese_surname',
+				),
+			),
 		),
-		'tests'	=> array(
-			'Error, you need to make sure to declare a variable called [[my_chinese_surname]] with the value [[Qiu]]' => array(
-				'my_chinese_surname',
-				'Qiu'
-			),
-			'Error, you need to make sure to declare a variable called [[my_chinese_surname]]' => array(
-				'my_chinese_surname',
-			),
-		),
-	),
-);
+	);
 					</code>
 				</pre>
 			</div>
