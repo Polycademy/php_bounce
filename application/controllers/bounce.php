@@ -113,18 +113,22 @@ class Bounce extends CI_Controller {
 		}
 		
 		//this captures any non-exceptional errors, that is errors that the user put into the code
-		//WE HAVE A PROBLEM, when there is no $output, it is false...
-		//WE NEED TO SEE IF '' is empty;
-		var_dump($output);
-		if(!$output){
+		//if output is strictly false to allow empty strings to pass through (as they are valid output)
+		if($output === false){
 			$this->_ajax_execute_error();
 			return false; //need to end execution here
 		}
 		
+		//if we are running against parameters, then we are in a mission, then add a success message
+		if($run_parameters != 'false'){
+			$output = $output . '<br /><span class="success">Well done you succeeded! Move on to the next mission!</span>';
+		}
+		//if not, then keep going
+		
 		$output = array(
 			0	=> array(
 				'line'		=> false,
-				'message'	=> $output . '<br /><span class="success">Well done you succeeded! Move on to the next mission!</span>',
+				'message'	=> $output,
 			),
 		);
 		

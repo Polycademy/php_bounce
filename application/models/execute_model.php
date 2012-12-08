@@ -62,10 +62,12 @@ class Execute_model extends CI_Model {
 				return false;
 			}
 			
-			#$this->firephp->log('Passed method exists');
-			#$this->firephp->log($check_method);
+			$output = $this->$check_method();
 			
-			if(!$output = $this->$check_method()){
+			//if output is STRICTLY false
+			//allows empty strings to pass through
+			if($output === false){
+				#var_dump($output);
 				return false;
 			}
 		}
@@ -249,7 +251,11 @@ class Execute_model extends CI_Model {
 		$this->phpsandboxer->init_env($fake_server_env_prepend_file);
 		$this->phpsandboxer->build_cli_options();
 		
-		if($execution_output = $this->phpsandboxer->execute_code($this->_test_code, 'PHP Bounce')){
+		$execution_output = $this->phpsandboxer->execute_code($this->_test_code, 'PHP Bounce');
+		
+		//basically ANYTHING but false because empty strings are good to go aswell!
+		if($execution_output !== false){
+			#var_dump($execution_output);
 			$this->_execution_timespan = $this->phpsandboxer->get_time_span();		
 			return $execution_output;
 		}else{
