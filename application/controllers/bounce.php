@@ -121,7 +121,7 @@ class Bounce extends CI_Controller {
 		$output = array(
 			0	=> array(
 				'line'		=> false,
-				'message'	=> $output,
+				'message'	=> $output . '<br /><span class="success">Well done you succeeded! Move on to the next mission!</span>',
 			),
 		);
 		
