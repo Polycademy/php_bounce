@@ -24,10 +24,10 @@ $(function(){
 		}).height(maxHeight);
 	}
 	
-	equalise_height(".main_sections > div");
-	$(window).resize(function() { 
-		equalise_height(".main_sections > div");
-	});
+	//equalise_height(".mission_grid > div");
+	//$(window).resize(function() { 
+	//	equalise_height(".mission_grid > div");
+	//});
 	
 });
 
