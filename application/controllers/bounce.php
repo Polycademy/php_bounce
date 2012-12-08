@@ -28,7 +28,7 @@ class Bounce extends CI_Controller {
 		
 	}
 	
-	public function mission($num){
+	public function mission($num = false){
 	
 		$mission_data = $this->Mission_model->get_mission($num);
 	
