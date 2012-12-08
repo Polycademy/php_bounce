@@ -113,6 +113,9 @@ class Bounce extends CI_Controller {
 		}
 		
 		//this captures any non-exceptional errors, that is errors that the user put into the code
+		//WE HAVE A PROBLEM, when there is no $output, it is false...
+		//WE NEED TO SEE IF '' is empty;
+		var_dump($output);
 		if(!$output){
 			$this->_ajax_execute_error();
 			return false; //need to end execution here
