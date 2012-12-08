@@ -194,7 +194,8 @@ class Mission_editor extends CI_Controller {
 		$mission_data = $this->Mission_model->get_mission($num);
 
 		//$missions['parameters'] returns as an array, so we need to export it to be shown
-		$mission_data['parameters'] = var_export($mission_data['parameters'], true);
+		//codemirror takes the slashes that var_export has away, so we need to re add it back in
+		$mission_data['parameters'] = addslashes(var_export($mission_data['parameters'], true));
 		
 		$this->_view_data += array(
 			'page_title'	=> 'Missions Update Editor PHP Bounce',
