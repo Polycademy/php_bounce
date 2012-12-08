@@ -88,7 +88,6 @@
 				<div class="xml_results">
 					<pre>
 						<code>
-							HERE SHOULD BE XML
 						</code>
 					</pre>
 				</div>

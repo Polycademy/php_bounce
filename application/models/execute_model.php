@@ -95,7 +95,7 @@ class Execute_model extends CI_Model {
 	 */
 	public function get_errors(){
 		
-		$this->firephp->log($this->_errors, 'At get_errors from Execute_model');
+		//$this->firephp->log($this->_errors, 'At get_errors from Execute_model');
 		
 		if(!empty($this->_errors)){
 			return $this->_errors;

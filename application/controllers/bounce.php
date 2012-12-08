@@ -55,8 +55,8 @@ class Bounce extends CI_Controller {
 	 */
 	public function ajax_execute($id, $run_whitelist = 'false', $run_parameters = 'true'){
 	
-		$this->firephp->log($run_whitelist);
-		$this->firephp->log($run_parameters);
+		//$this->firephp->log($run_whitelist);
+		//$this->firephp->log($run_parameters);
 	
 		//get the mission data, code and parameters
 		$test_code = $this->input->post('code');
@@ -171,7 +171,7 @@ class Bounce extends CI_Controller {
 			
 		}
 		
-		$this->firephp->log($errors, 'At Ajax_Execute_Error');
+		//$this->firephp->log($errors, 'At Ajax_Execute_Error');
 		
 		$this->_view_data += array(
 			'response'	=> $errors,

@@ -189,7 +189,7 @@ class Mission_editor extends CI_Controller {
 			'mission_data'	=> $mission_data,
 			'status'		=> (empty($mission_data)) ? '<li>There isn\'t any mission with the id #' . $id . '. Go back, you cannot update here.</li>' : $status,
 			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method() . '/' . $id,
-			'xml_submit'	=> $this->router->fetch_class() . '/mission_xml_parsing',
+			'xml_submit'	=> $this->router->fetch_class() . '/ajax_xml_parse',
 		);
 	
 		$this->_load_views('mission_editor_addupdate_view');
@@ -197,22 +197,32 @@ class Mission_editor extends CI_Controller {
 	}
 	
 	//for ajax output of xml
-	public function mission_xml_parsing(){
+	public function ajax_xml_parse(){
 	
 		$code = $this->input->post('code');
-		
+		$php_binary = $this->config->item('php_binary');
+				
 		if(empty($code)){
-			$this->_execute_error_processing('No code was parsed into XML');
+			$this->_ajax_xml_error('No code to execute!');
 			return false;
 		}
 		
-		if(!$this->Execute_model->init_options($code, $this->config->item('php_binary'))){
-			$this->_execute_error_processing();
+		$options[] = 'parse';
+		
+		//initating the options for execute model, then running the execution
+		$this->Execute_model->init_options($code, $php_binary);
+		
+		//we are trying to catch an exception if any exceptional errors arise (errors due to program flow)
+		try{
+			$output = $this->Execute_model->run($options);
+		} catch (Exception $e) {
+			$this->_ajax_xml_error($e->getMessage());
 			return false;
 		}
 		
-		if(!$this->Execute_model->parse()){
-			$this->_execute_error_processing();
+		//this captures any non-exceptional errors, that is errors that the user put into the code
+		if(!$output){
+			$this->_ajax_xml_error();
 			return false;
 		}
 		
@@ -221,22 +231,28 @@ class Mission_editor extends CI_Controller {
 		$this->_view_data += array(
 			'response'	=> $mission_graph,
 		);
+		
 		$this->load->view('xml_view', $this->_view_data);
+		
+		return true;
 		
 	}
 	
 	//$errors is for passing in custom errors
-	protected function _execute_error_processing($errors = false){
+	protected function _ajax_xml_error($errors = false){
 	
-		$errors = (!empty($errors)) ? $errors : $this->Execute_model->get_errors();
-			
+		//if we have a custom error, then lets use it instead
+		$errors = (!empty($custom_error)) ? $custom_error : $this->Execute_model->get_errors();
+		
+		//there would only be xml error message, and we're not doing any json parsing
 		if(is_array($errors)){
-			$errors = implode($errors);
+			$errors = $errors[0]['message'];
 		}
 		
 		$this->_view_data += array(
 			'response'	=> $errors,
 		);
+		
 		$this->load->view('xml_view', $this->_view_data);
 		
 		return true;

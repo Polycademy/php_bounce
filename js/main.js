@@ -64,7 +64,7 @@ $(function(){
 				 * );
 				 */
 				 
-				 console.log(response);
+				//console.log(response);
 				
 				//there'll be multiple response elements
 				$.each(response, function(index, value){
@@ -74,7 +74,7 @@ $(function(){
 					
 					if(typeof value === "object"){
 						//console.log("THIS IS AN OBJECT");	
-						console.log(value.line);
+						//console.log(value.line);
 						
 						//setup the message
 						var error_output = value.message;
@@ -140,16 +140,10 @@ $(function(){
 			data: serializedData,
 			// callback handler that will be called on success
 			success: function(response, textStatus, jqXHR){
-				// log a message to the console
-				//console.log("Hooray, it worked!");
-			},
-			// callback handler that will be called on error
-			error: function(jqXHR, textStatus, errorThrown){
-				// log the error to the console
-				console.log(
-					"The following error occured: "+
-					textStatus, errorThrown
-				);
+				 
+				//console.log(response);
+				$(".xml_results > pre > code").append(response);
+				
 			},
 			// callback handler that will be called on completion
 			// which means, either on success or error
