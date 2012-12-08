@@ -28,13 +28,13 @@ class Bounce extends CI_Controller {
 		
 	}
 	
-	public function mission($id){
+	public function mission($num){
 	
-		$mission_data = $this->Mission_model->get_mission($id);
+		$mission_data = $this->Mission_model->get_mission($num);
 	
 		$this->_view_data += array(
 			'page_title'	=> 'Missions PHP Bounce',
-			'code_submit'	=> $this->router->fetch_class() . '/ajax_execute/' . $id . '/true',
+			'code_submit'	=> $this->router->fetch_class() . '/ajax_execute/' . $mission_data['mission_number'] . '/true',
 			'mission_data'	=> $mission_data,
 		);
 	
@@ -53,20 +53,25 @@ class Bounce extends CI_Controller {
 	 * @param string $run_parameters
 	 * @return json output
 	 */
-	public function ajax_execute($id, $run_parameters = 'true'){
+	public function ajax_execute($num, $run_parameters = 'true'){
 	
 		//$this->firephp->log($run_whitelist);
 		//$this->firephp->log($run_parameters);
 	
 		//get the mission data, code and parameters
 		$test_code = $this->input->post('code');
-		$mission_data = $this->Mission_model->get_mission($id);
+		$mission_data = $this->Mission_model->get_mission($num);
 		$php_binary = $this->config->item('php_binary');
 		
-		if(empty($mission_data)){
-			$this->_ajax_execute_error('There is no data at mission #' . $id);
-			return false;
+		//if $run_parameters is false, no point getting mission data
+		if($run_parameters != 'false'){
+			if(empty($mission_data)){
+				$this->_ajax_execute_error('There is no data at mission #' . $num);
+				return false;
+			}
 		}
+		
+		$id = $mission_data['id'];
 		
 		#$this->firephp->log('Mission Data Exists');
 		

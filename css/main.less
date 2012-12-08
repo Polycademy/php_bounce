@@ -25,6 +25,7 @@ body {
 	-webkit-font-smoothing: antialiased;
 	font-smoothing: antialiased;
 	color: #464a51;
+	background: #39cbfb;
 }
 
 .container{
@@ -43,11 +44,47 @@ h1{
 
 h2{
 	text-align: center;
-	margin: 20px;
+	margin: 26px;
+}
+
+h3{
+	text-align: center;
 }
 
 h4{
 	text-align: center;
+}
+
+ /* ==========================================================================
+   EDITOR
+   ========================================================================== */
+.code_editor_form{
+	.CodeMirror{
+		display: block;
+		margin: 0 auto;
+	}
+	.CodeMirror-scroll{
+		height: 150px;
+	}
+	.code_submit{
+		margin: 20px auto;
+		display: block;
+	}
+}
+
+ /* ==========================================================================
+   OUTPUT
+   ========================================================================== */
+.home_display{
+	.output_container{
+		height: 100px;
+		background: #1c6982;
+		border: 1px solid #ccc;
+		.border_radius(4px);
+		padding: 20px;
+		overflow: auto;
+		color: #d4d4d4;
+	}
 }
 
 /* ==========================================================================
@@ -58,6 +95,15 @@ header{
 }
    
 .center_nav{
+	.navbar-inner{
+		background: #9e4a4a;
+		border-bottom: 1px solid #787b8d;
+		box-shadow: none;
+		.brand{
+			padding: 4px 20px;
+			margin-left: 10%;
+		}
+	}
 	.nav{
 		text-align: center;
 		float: none;
@@ -67,40 +113,94 @@ header{
 			*display:inline; /* ie7 fix */
 			*zoom:1; /* hasLayout ie7 trigger */
 			vertical-align: top;
+			a{
+				color: #373434;
+				font-weight: bold;
+				text-shadow: none;
+				font-size: 18px;
+				&:hover{
+					color: #c2c2c2;
+				}
+			}
 		}
 	}
-	.btn-navbar {
-		width: 16px;
-		height: 13px;
-		margin: 5px auto;
-		float: none;
-		clear: both;
+}
+
+ /* ==========================================================================
+   FOOTER
+   ========================================================================== */
+footer{
+	.footer_link{
+		margin: 40px 0;
+	}
+	.copyright_notice{
+		text-align: center;
+		display: block;
+		margin: 15px auto;
+		font-size: 10px;
+	}
+}
+
+ /* ==========================================================================
+   HOME
+   ========================================================================== */
+.home_display{
+	max-width: 800px;
+	margin: 0 auto;
+}
+.whatisphpbounce{
+	margin: 40px auto;
+	max-width: 700px;
+	.faq{
+		font-size: 16px;
+		background: #1C6982;
+		padding: 20px;
+		border: 1px solid #CCCCCC;
+		.border_radius(4px);
+		color: #F0F0F0;
+		h2{
+			margin: 0;
+		}
+		h4{
+			margin: 15px 0;
+		}
+		p {
+			margin: 0 0 15px;
+		}
+		a{
+			color: #ABABAB;
+			&:hover{
+				color: #494949;
+			}
+		}
 	}
 }
 
  /* ==========================================================================
    MISSION LIST
    ========================================================================== */
-.bounce_list{
-	font-size: 40px;
-	line-height: 40px;
-	.specific_mission{
-		text-align: center;
-		background: -moz-linear-gradient(top,  rgba(209,209,209,1) 0%, rgba(158,147,142,0.9) 100%);
-		background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(209,209,209,1)), color-stop(100%,rgba(158,147,142,0.9)));
-		background: -webkit-linear-gradient(top,  rgba(209,209,209,1) 0%,rgba(158,147,142,0.9) 100%);
-		background: -o-linear-gradient(top,  rgba(209,209,209,1) 0%,rgba(158,147,142,0.9) 100%);
-		background: -ms-linear-gradient(top,  rgba(209,209,209,1) 0%,rgba(158,147,142,0.9) 100%);
-		background: linear-gradient(to bottom,  rgba(209,209,209,1) 0%,rgba(158,147,142,0.9) 100%);
-		filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1d1d1', endColorstr='#e69e938e',GradientType=0 );
-		border: 1px solid #e3e3e3;
-		padding: 20px;
-		margin: 20px;
-		
-		a{
-			color: #6B4E40;
+.mission_list{
+	margin: 40px auto;
+	.mission_list_container{
+		font-size: 40px;
+		line-height: 40px;
+		margin: 40px auto;
+		max-width: 900px;
+		.mission{
+			display: block;
+			text-align: center;
+			
+			border: 1px solid #1d80a0;
+			background: #1C6982;
+			color: #39CBFB;
+			padding: 20px;
+			margin: 30px;
+			
+			&:hover{
+				color: #1C6982;
+				background: #39CBFB;
+			}
 		}
-		
 	}
 }
 

@@ -127,7 +127,7 @@ class Mission_editor extends CI_Controller {
 	}
 	
 	//UPDATE can DELETE aswell, so we have A DELETE BUTTON added in with the type
-	public function update($id){
+	public function update($num){
 	
 		if(!$this->ion_auth->logged_in() AND !$this->ion_auth->is_admin()){
 			redirect('auth/login');
@@ -175,13 +175,13 @@ class Mission_editor extends CI_Controller {
 				'whitelist'		=> trim($this->input->post('whitelist'), ','),
 			);
 			
-			if(!$this->Mission_model->update_mission($id, $updated_mission)){
-				$status = '<li>No update was made to mission #' . $id . '</li>';
+			if(!$this->Mission_model->update_mission($num, $updated_mission)){
+				$status = '<li>No update was made to mission #' . $num . '</li>';
 				if($this->Mission_model->eval_error){
 					$status .= '<li>Eval Error: ' . $this->Mission_model->eval_error['message'] . ' on ' . $this->Mission_model->eval_error['line'] . '</li>';
 				}
 			}else{
-				$status = '<li>Updated mission #' . $id . '! Thanks!</li>';
+				$status = '<li>Updated mission #' . $num . '! Thanks!</li>';
 			}
 		
 		}else{
@@ -189,9 +189,10 @@ class Mission_editor extends CI_Controller {
 			$status = validation_errors('<li>', '</li>');
 			
 		}
-	
+		
 		//get the data
-		$mission_data = $this->Mission_model->get_mission($id);
+		$mission_data = $this->Mission_model->get_mission($num);
+
 		//$missions['parameters'] returns as an array, so we need to export it to be shown
 		$mission_data['parameters'] = var_export($mission_data['parameters'], true);
 		
@@ -199,8 +200,8 @@ class Mission_editor extends CI_Controller {
 			'page_title'	=> 'Missions Update Editor PHP Bounce',
 			'type'			=> 'update',
 			'mission_data'	=> $mission_data,
-			'status'		=> (empty($mission_data)) ? '<li>There isn\'t any mission with the id #' . $id . '. Go back, you cannot update here.</li>' : $status,
-			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method() . '/' . $id,
+			'status'		=> (empty($mission_data)) ? '<li>There isn\'t any mission at number ' . $num . '. Go back, you cannot update here.</li>' : $status,
+			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method() . '/' . $num,
 			'xml_submit'	=> $this->router->fetch_class() . '/ajax_xml_parse',
 		);
 	

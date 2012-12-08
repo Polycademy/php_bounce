@@ -1,4 +1,10 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>        
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+		<footer>
+			<div class="container">
+				<h3 class="footer_link">Ready for the real challenge? Take on the bootcamp at <a href="//polycademy.com">Polycademy</a>!</h3>
+				<em class="copyright_notice">&copy; Polycademy & Code for Australia 2012</em>
+			</div>
+		</footer
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="<?= base_url($js_assets) ?>/jquery/jquery-1.8.2.min.js"><\/script>')</script>
 

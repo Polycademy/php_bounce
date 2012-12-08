@@ -32,7 +32,7 @@
 						<tbody>
 						<? foreach($missions as $mission){ ?>
 							<tr>
-								<th scope="row"><?=anchor('mission_editor/update/' . $mission['id'], $mission['mission_number'])?></th>
+								<th scope="row"><?=anchor('mission_editor/update/' . $mission['mission_number'], $mission['mission_number'])?></th>
 								<td><?=$mission['title']?></td>
 								<td><?=$mission['description']?></td>
 								<td><?=$mission['whitelist']?></td>

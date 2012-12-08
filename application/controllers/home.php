@@ -15,7 +15,7 @@ class Home extends CI_Controller {
 		
 		$this->_view_data += array(
 			'page_title'	=> $this->config->item('site_name', 'php_bounce'),
-			'code_submit'	=> $this->router->fetch_class(),
+			'code_submit'	=> 'bounce/ajax_execute/false/false',
 		);
 	
 		$this->_load_views('home_view');

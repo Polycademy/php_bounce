@@ -78,9 +78,10 @@ class Mission_model extends CI_Model {
 		
 	}
 	
-	public function get_mission($id){
+	//this should be based on number
+	public function get_mission($num){
 	
-		$query = $this->db->get_where('missions', array('id'=>$id));
+		$query = $this->db->get_where('missions', array('mission_number'=>$num));
 		
 		$mission = false;
 		
@@ -102,16 +103,16 @@ class Mission_model extends CI_Model {
 	
 	}
 	
-	public function update_mission($id, $updated_mission){
+	public function update_mission($num, $updated_mission){
 	
-		//Update the mission based on id		
+		//Update the mission based on number	
 		$encoded_parameter = $this->_parameter_encode($updated_mission['parameters']);
 		
 		if($encoded_parameter){
 		
 			$updated_mission['parameters'] = $encoded_parameter;
 			
-			$this->db->where('id', $id);
+			$this->db->where('mission_number', $num);
 			$this->db->update('missions', $updated_mission);
 			
 			if($this->db->affected_rows() > 0){

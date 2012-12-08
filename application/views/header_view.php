@@ -23,17 +23,11 @@
 		<header>
 			<nav class="navbar navbar-fixed-top center_nav" id="main_nav">
 				<div class="navbar-inner">
-					<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</a>
-					<div class="nav-collapse collapse container">
+					<div class="container">
 						<ul class="nav">
-							<li><?=anchor('home', 'PHP Bounce')?></li>
-							<li class="divider-vertical"></li>
+							<li><a class="brand" href="/"><img src="<?= base_url($img_assets) ?>/php_bounce_small_logo.png" /></a></li>
+							<li><?=anchor('/', 'Home')?></li>
 							<li><?=anchor('bounce', 'Mission List')?></li>
-							<li class="divider-vertical"></li>
 						</ul>
 					</div>
 				</div>
