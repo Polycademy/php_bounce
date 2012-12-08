@@ -216,7 +216,7 @@ class Mission_editor extends CI_Controller {
 			return false;
 		}
 		
-		$mission_graph = $this->Execute_model->get_parsed_mission_graph();
+		$mission_graph = $this->Execute_model->get_mission_graph();
 		
 		$this->_view_data += array(
 			'response'	=> $mission_graph,

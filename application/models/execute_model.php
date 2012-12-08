@@ -44,10 +44,86 @@ class Execute_model extends CI_Model {
 	
 	}
 	
+	/** (SINGLE RUN)
+	* $options is an array of which checks to run
+		array('lint', 'whitelist', 'parse', 'mission_check', 'execute');
+	* returns false or string output
+	*/
+	
+	/**
+	 * Runs execution routine checks
+	 *
+	 * Take an array of options containing the names of all the checks to be done, then runs through each check.
+	 * If any of the checks fail, then returns false. Otherwise returns the execution output.
+	 * 
+	 * @param array $options
+	 * @return string/boolean
+	 * @throws Exception If one of the defined check methods don't exist.
+	 */
+	public function run(array $options){
+		
+		foreach($options as $check_method){
+			if(!method_exists($this, $check_method)){
+				throw new Exception('The method ' . $check_method . ' does not exist in Execute_model.');
+				return false;
+			}
+			if(!$output = $this->$check_method){
+				return false;
+			}
+		}
+		
+		return $output;
+		
+		/*
+		
+		if(isset($options['lint'])){
+			if(!$this->lint()){
+				return false;
+			}
+		}
+		
+		if(isset($options['whitelist'])){
+			if(!$this->whitelist()){
+				return false;
+			}
+		}
+		
+		//you can do a parse without a mission check
+		if(isset($options['parse'])){
+			if(!$this->parse()){
+				return false;
+			}
+		}
+		
+		//but you can't do a mission_check without a parse
+		if(isset($options['mission_check']) AND isset($options['parse'])){
+			if(!$this->mission_check()){
+				return false;
+			}
+		}
+		
+		if(isset($options['execute'])){
+			if(!$output = $this->execute()){
+				return false;
+			}
+		}
+		
+		return $output;
+		*/
+		
+	}
+	
+	//get the mission_graph
+	public function get_mission_graph(){
+		if(empty($this->_mission_graph)){
+			return false;
+		}
+		return $this->_mission_graph;
+	}
+	
+	//get errors
 	public function get_errors(){
-	
-		#$this->firephp->log($this->_errors, 'Errors logged from execute_model');
-	
+		
 		if(!empty($this->_errors)){
 			return $this->_errors;
 		}
@@ -126,13 +202,6 @@ class Execute_model extends CI_Model {
 		
 		}
 	
-	}
-	
-	public function get_parsed_mission_graph(){
-		if(empty($this->_mission_graph)){
-			return false;
-		}
-		return $this->_mission_graph;
 	}
 	
 	//mission_check
