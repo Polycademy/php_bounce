@@ -52,35 +52,53 @@ $(function(){
 			success: function(response, textStatus, jqXHR){
 				//response is ALWAYS a JSON object
 				
-				//we need
-				
-				//console.log(response);
-				//console.log(response[0]);
-				//console.log(response[0].message);
+				//STILL NEED TO TEST WHITELIST ERROR...
+				//response comes in as like
+				/*
+					response =>
+						0 => object =>      //<---- We have errors like this
+								message
+								type
+								..etc
+						1 => string... etc //<----- these are usually output or single error messages, or mission check messages...
+						..etc
+				*/
 				
 				//first test if response is a json object...
 				console.log(response);
+				console.log(response[0]);
 				//this works
 				//numerical keys need to be accessed like [0]
 				//associative keys need to be accessed like .blah.blah
-				console.log(response[0].message.type);
+				//console.log(response[0].message.type);
 				
 				//there'll be multiple response elements
 				$.each(response, function(index, value){
+					console.log(value);
+					console.log(index);
+
 					
 					//if this is an object and not just a string value, then we need to access it again...
-					if(typeof this === "object"){
-						console.log('It is an object!');
-						var error_output = "Oops! You have received a " + this.message.type + ", the error is due to '" + this.message.message + "'. Check out line " + this.message.line + " in your code.<br /><br />";
-						$('.output_container > div').append(error_output);
+					if(typeof value === "object"){
+						console.log("THIS IS AN OBJECT");
+						
+						//console.log(value.type);
+						
+						var error_output = "Oops! You have received a " + value.type + ", the error is due to '" + value.message + "'. Check out line " + value.line + " in your code.<br />";
+						$(".output_container > div").append(error_output);
+					}else{
+					
+						//if not an object, then it is the output
+						var output = value + '<br />';
+						$(".output_container > div").append(output);
+					
 					}
 					
+					
 				});
-				//we need to parse this json object
-				//now that it is a json object, we have to test the value..
-				//console.log(response);
-				//
-				//$('.output_container > pre').append(response);
+				
+				$(".output_container > div").append("<br />");
+				
 			},
 			// callback handler that will be called on completion
 			// which means, either on success or error

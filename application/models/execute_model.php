@@ -223,9 +223,9 @@ class Execute_model extends CI_Model {
 			$this->execution_timespan = $this->phpsandboxer->get_time_span();		
 			return $execution_output;
 		}else{
-			$this->_errors[] = array(
-				'message'	=> $this->phpsandboxer->get_parse_error(),
-			);
+		
+			$this->_errors[] = $this->phpsandboxer->get_parse_error();
+			
 			return false;
 		}
 			
