@@ -4,6 +4,8 @@ header('Content-type: application/json');
 
 if(isset($response)) {
 
+	$this->firephp->log($response, 'At JSON');
+
 	echo json_encode($response, JSON_NUMERIC_CHECK | JSON_FORCE_OBJECT);
 	
 }else{

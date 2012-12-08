@@ -61,7 +61,11 @@ class Execute_model extends CI_Model {
 				throw new Exception('The method ' . $check_method . ' does not exist in Execute_model.');
 				return false;
 			}
-			if(!$output = $this->$check_method){
+			
+			#$this->firephp->log('Passed method exists');
+			#$this->firephp->log($check_method);
+			
+			if(!$output = $this->$check_method()){
 				return false;
 			}
 		}
@@ -90,6 +94,8 @@ class Execute_model extends CI_Model {
 	 * @return xml/boolean
 	 */
 	public function get_errors(){
+		
+		$this->firephp->log($this->_errors, 'At get_errors from Execute_model');
 		
 		if(!empty($this->_errors)){
 			return $this->_errors;
@@ -207,6 +213,9 @@ class Execute_model extends CI_Model {
 		if(!$this->missionchecker->graph_check()){
 			//there can be multiple missionchecker errors so pass directly
 			$this->_errors = $this->missionchecker->get_error_messages();
+			
+			#$this->firephp->log($this->_errors);
+			
 			return false;
 		}
 		
@@ -245,7 +254,7 @@ class Execute_model extends CI_Model {
 			return $execution_output;
 		}else{
 			//there is only 1 error from parse error, so we can declare it here
-			$this->_errors[] = $this->phpsandboxer->get_parse_error()();
+			$this->_errors[] = $this->phpsandboxer->get_parse_error();
 			return false;
 		}
 		

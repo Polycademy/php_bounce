@@ -63,26 +63,35 @@ $(function(){
 				 *		),
 				 * );
 				 */
+				 
+				 console.log(response);
 				
 				//there'll be multiple response elements
 				$.each(response, function(index, value){
 					//console.log(value);
 					//console.log(index);
 					
-					//
+					
 					if(typeof value === "object"){
 						//console.log("THIS IS AN OBJECT");	
 						console.log(value.line);
-						var error_output = "You have a received an error, " + value.message + ".";
 						
-						if(value.line){
-							error_output = error_output + " Check out line " + value.line;
+						//setup the message
+						var error_output = value.message;
+						
+						//is there a line number for this error?
+						if(typeof value.line === "number"){
+						
+							error_output = error_output + ". You should check out line " + value.line + " in your code.";
 							//setting marker at editor (line -1)
 							editor.setMarker(value.line - 1, '● %N%');
+							
 						}
 						
+						//we want some spacing don't we?
 						error_output = error_output + "<br />";
 						
+						//append onto the div
 						$(".output_container > div").append(error_output);
 						
 					}

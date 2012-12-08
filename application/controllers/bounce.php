@@ -55,6 +55,9 @@ class Bounce extends CI_Controller {
 	 */
 	public function ajax_execute($id, $run_whitelist = 'false', $run_parameters = 'true'){
 	
+		$this->firephp->log($run_whitelist);
+		$this->firephp->log($run_parameters);
+	
 		//get the mission data, code and parameters
 		$test_code = $this->input->post('code');
 		$mission_data = $this->Mission_model->get_mission($id);
@@ -65,10 +68,14 @@ class Bounce extends CI_Controller {
 			return false;
 		}
 		
+		#$this->firephp->log('Mission Data Exists');
+		
 		if(empty($test_code)){
 			$this->_ajax_execute_error('No code to execute!');
 			return false;
 		}
+		
+		#$this->firephp->log('Test Code Exists');
 		
 		//building up the options in order of execution...
 		
@@ -99,11 +106,13 @@ class Bounce extends CI_Controller {
 			$output = $this->Execute_model->run($options);
 		} catch (Exception $e) {
 			$this->_ajax_execute_error($e->getMessage());
+			return false; //need to end execution here
 		}
 		
 		//this captures any non-exceptional errors, that is errors that the user put into the code
 		if(!$output){
 			$this->_ajax_execute_error();
+			return false; //need to end execution here
 		}
 		
 		$output = array(
@@ -148,19 +157,21 @@ class Bounce extends CI_Controller {
 	private function _ajax_execute_error($custom_error = false){
 	
 		//if we have a custom error, then lets use it instead
-		$errors = (!empty($custom_errors)) ? $custom_errors : $this->Execute_model->get_errors();
+		$errors = (!empty($custom_error)) ? $custom_error : $this->Execute_model->get_errors();
 		
 		//well if it is a string then it can simply be outputted
 		if(is_string($errors)){
 		
 			$errors = array(
-				0 = array(
+				0 => array(
 					'line'		=> false,
 					'message'	=> $errors,
 				)
 			);
 			
 		}
+		
+		$this->firephp->log($errors, 'At Ajax_Execute_Error');
 		
 		$this->_view_data += array(
 			'response'	=> $errors,
