@@ -98,7 +98,7 @@ class Mission_editor extends CI_Controller {
 			'page_title'	=> 'Missions Add Editor PHP Bounce',
 			'type'			=> 'add',
 			'editor_submit'	=> $this->router->fetch_class() . '/' . $this->router->fetch_method(),
-			'xml_submit'	=> $this->router->fetch_class() . '/mission_xml_parsing',
+			'xml_submit'	=> $this->router->fetch_class() . '/ajax_xml_parse',
 			'status'		=> $status,
 		);
 	
@@ -200,6 +200,9 @@ class Mission_editor extends CI_Controller {
 	public function ajax_xml_parse(){
 	
 		$code = $this->input->post('code');
+		
+		#var_dump($code);
+		
 		$php_binary = $this->config->item('php_binary');
 				
 		if(empty($code)){
@@ -226,7 +229,7 @@ class Mission_editor extends CI_Controller {
 			return false;
 		}
 		
-		$mission_graph = $this->Execute_model->get_mission_graph();
+		$mission_graph = htmlentities($this->Execute_model->get_mission_graph());
 		
 		$this->_view_data += array(
 			'response'	=> $mission_graph,
@@ -239,7 +242,7 @@ class Mission_editor extends CI_Controller {
 	}
 	
 	//$errors is for passing in custom errors
-	protected function _ajax_xml_error($errors = false){
+	protected function _ajax_xml_error($custom_error = false){
 	
 		//if we have a custom error, then lets use it instead
 		$errors = (!empty($custom_error)) ? $custom_error : $this->Execute_model->get_errors();

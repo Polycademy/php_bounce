@@ -86,10 +86,7 @@
 					<?= form_submit(array('name'=>'submit', 'type'=>'submit', 'value'=>'Show XML Parse', 'class'=>'btn btn-primary')) ?>
 				<?= form_close() ?>
 				<div class="xml_results">
-					<pre>
-						<code>
-						</code>
-					</pre>
+					<pre><code></code></pre>
 				</div>
 			</div>
 			<div class="array_example">

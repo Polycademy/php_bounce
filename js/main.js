@@ -142,7 +142,7 @@ $(function(){
 			success: function(response, textStatus, jqXHR){
 				 
 				//console.log(response);
-				$(".xml_results > pre > code").append(response);
+				$(".xml_results > pre > code").html(response);
 				
 			},
 			// callback handler that will be called on completion

@@ -34,7 +34,7 @@ class Bounce extends CI_Controller {
 	
 		$this->_view_data += array(
 			'page_title'	=> 'Missions PHP Bounce',
-			'code_submit'	=> $this->router->fetch_class() . '/ajax_execute/' . $id . '/false/true',
+			'code_submit'	=> $this->router->fetch_class() . '/ajax_execute/' . $id . '/true',
 			'mission_data'	=> $mission_data,
 		);
 	
@@ -53,7 +53,7 @@ class Bounce extends CI_Controller {
 	 * @param string $run_parameters
 	 * @return json output
 	 */
-	public function ajax_execute($id, $run_whitelist = 'false', $run_parameters = 'true'){
+	public function ajax_execute($id, $run_parameters = 'true'){
 	
 		//$this->firephp->log($run_whitelist);
 		//$this->firephp->log($run_parameters);
@@ -82,11 +82,9 @@ class Bounce extends CI_Controller {
 		$options[] = 'lint';
 		
 		$whitelist = false;
-		if($run_whitelist != 'false'){
+		if(!empty($mission_data['whitelist'])){
 			$options[] = 'whitelist';
-			if(!empty($mission_data['whitelist'])){
-				$whitelist = explode(',', $mission_data['whitelist']);
-			}
+			$whitelist = explode(',', $mission_data['whitelist']);
 		}
 		
 		$mission_parameters = false;

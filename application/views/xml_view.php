@@ -4,7 +4,7 @@
 header('Content-Type: text/plain; charset=utf-8');
 
 // Encode data
-if(isset($response)) {
+if(isset($response)){
 	echo $response;
 }else{
 	echo 'No xml data';
