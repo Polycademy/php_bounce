@@ -36,6 +36,13 @@
 				<script>
 					var editor = CodeMirror.fromTextArea(document.getElementById("codemirror"), {
 						lineNumbers: true,
+						onGutterClick: function(codemirror, number) {
+							var info = codemirror.lineInfo(number);
+							if (info.markerText)
+								codemirror.clearMarker(number);
+							else
+								codemirror.setMarker(number, "● %N%");
+						},
 						matchBrackets: true,
 						mode: "text/x-php",
 						indentUnit: 4,
@@ -46,6 +53,8 @@
 						autoClearEmptyLines: true,
 						autofocus: true,
 					});
+					
+					//editor.setMarker();
 				</script>
 				<script>
 					//passing variables from PHP to js

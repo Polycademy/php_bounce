@@ -73,12 +73,16 @@ $(function(){
 					
 					//if this is an object and not just a string value, then we need to access it again...
 					if(typeof value === "object"){
-						console.log("THIS IS AN OBJECT");
-						
+						//console.log("THIS IS AN OBJECT");	
 						//console.log(value.type);
 						
 						var error_output = "Oops! You have received a " + value.type + ", the error is due to '" + value.message + "'. Check out line " + value.line + " in your code.<br />";
+						
 						$(".output_container > div").append(error_output);
+						
+						//setting marker at editor (line -1)
+						editor.setMarker(value.line - 1, '● %N%');
+						
 					}else{
 					
 						//if not an object, then it is the output

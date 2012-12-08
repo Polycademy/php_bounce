@@ -43,6 +43,13 @@ class Bounce extends CI_Controller {
 	}
 	
 	//do some ajax loaded stuff...
+	
+	//This uses a whitelist, we need a function allow freeform (so no whitelist) and/or free from parameters (so no parameters)
+	//no parameters would not be a mission though...
+	//for no parameters => you can create a new method like public function freeform ..> this will pass the options into ajaxexecute with no whitelist being false and parameters being false
+	//with no whitelist.. it will be difficult..
+	//THE KEY is what we need to have the ability to define our own functions
+	
 	public function mission_ajax_execute($id){
 	
 		//get the mission data, code and parameters
