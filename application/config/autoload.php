@@ -79,7 +79,7 @@ $autoload['packages'] = array();
 |	$autoload['libraries'] = array('database', 'email', 'xmlrpc');
 */
 
-$autoload['libraries'] = array('form_validation', 'database', 'firephp', 'phplint', 'phpsandboxer', 'phpwhitelist', 'missionchecker');
+$autoload['libraries'] = array('form_validation', 'database', 'firephp', 'phplint', 'phpsandboxer', 'phpwhitelist', 'missionchecker', 'ion_auth');
 
 
 /*
@@ -95,7 +95,7 @@ $autoload['libraries'] = array('form_validation', 'database', 'firephp', 'phplin
 |	$autoload['drivers'] = array('session', 'cache');
 */
 
-$autoload['drivers'] = array();
+$autoload['drivers'] = array('session');
 
 
 /*
