@@ -63,20 +63,13 @@ $(function(){
 						1 => string... etc //<----- these are usually output or single error messages, or mission check messages...
 						..etc
 				*/
-				
-				//first test if response is a json object...
-				console.log(response);
-				console.log(response[0]);
-				//this works
 				//numerical keys need to be accessed like [0]
 				//associative keys need to be accessed like .blah.blah
-				//console.log(response[0].message.type);
 				
 				//there'll be multiple response elements
 				$.each(response, function(index, value){
-					console.log(value);
-					console.log(index);
-
+					//console.log(value);
+					//console.log(index);
 					
 					//if this is an object and not just a string value, then we need to access it again...
 					if(typeof value === "object"){
@@ -98,6 +91,15 @@ $(function(){
 				});
 				
 				$(".output_container > div").append("<br />");
+				
+				//now need to scroll to the bottom
+				var div = $(".output_container > div")[0];
+				var scrollHeight = Math.max(div.scrollHeight, div.clientHeight);
+				var scroll = scrollHeight - div.clientHeight;
+				
+				$(".output_container > div").animate({
+					scrollTop: scroll,
+				}, "slow");
 				
 			},
 			// callback handler that will be called on completion

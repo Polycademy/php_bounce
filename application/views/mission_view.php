@@ -19,7 +19,7 @@
 									array(
 										'name'			=> 'code',
 										'id'			=> 'codemirror',
-										'autocomplete'	=> 'off', //firefox will autocomplete this
+										//'autocomplete'	=> 'off', //firefox will autocomplete this NO LONGER NEEDED
 									)
 								) ?>
 								<?= form_submit(array('name'=>'submit', 'type'=>'submit', 'value'=>'Execute!', 'class'=>'btn btn-primary code_submit')) ?>
