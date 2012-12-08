@@ -17,6 +17,10 @@ class Mission_editor extends CI_Controller {
 	//password protect please
 	public function index(){
 	
+		if(!$this->ion_auth->logged_in() AND !$this->ion_auth->is_admin()){
+			redirect('auth/login');
+		}
+	
 		//first lets get all the missions
 		//$missions is returned as an array
 		$missions = $this->Mission_model->get_all_missions();
@@ -35,6 +39,10 @@ class Mission_editor extends CI_Controller {
 	}
 	
 	public function add(){
+	
+		if(!$this->ion_auth->logged_in() AND !$this->ion_auth->is_admin()){
+			redirect('auth/login');
+		}
 		
 		$status = false;
 		
@@ -121,6 +129,10 @@ class Mission_editor extends CI_Controller {
 	//UPDATE can DELETE aswell, so we have A DELETE BUTTON added in with the type
 	public function update($id){
 	
+		if(!$this->ion_auth->logged_in() AND !$this->ion_auth->is_admin()){
+			redirect('auth/login');
+		}
+		
 		$status = false;
 		
 		$validation_rules = array(

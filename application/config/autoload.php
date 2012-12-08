@@ -95,7 +95,7 @@ $autoload['libraries'] = array('form_validation', 'database', 'firephp', 'phplin
 |	$autoload['drivers'] = array('session', 'cache');
 */
 
-$autoload['drivers'] = array('session');
+$autoload['drivers'] = array();
 
 
 /*
