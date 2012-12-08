@@ -171,9 +171,9 @@ array(
 			);
 		*/
 		
-		
+		//here output is actually just a string
 		$this->_view_data += array(
-			'response'	=> $output,
+			'response'	=> array($output), //$output needs to be an array...
 		);
 		$this->load->view('json_view', $this->_view_data);
 		

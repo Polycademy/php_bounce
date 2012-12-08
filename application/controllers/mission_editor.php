@@ -229,9 +229,7 @@ class Mission_editor extends CI_Controller {
 	protected function _execute_error_processing($errors = false){
 	
 		$errors = (!empty($errors)) ? $errors : $this->Execute_model->get_errors();
-	
-		#$this->firephp->log($errors);
-		
+			
 		if(is_array($errors)){
 			$errors = implode($errors);
 		}

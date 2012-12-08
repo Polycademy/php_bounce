@@ -280,6 +280,10 @@ class Phpsandboxer{
 		echo '</pre>';
 		*/
 		
+		#echo($stderr);
+		#var_dump($stdout);
+		
+		
 		if(!empty($stderr)){
 			$this->_error = $this->_parse_error($stderr, $fname);
 			return false;
@@ -308,6 +312,8 @@ class Phpsandboxer{
 			'file'		=> (!empty($fname)) ? $fname : $matches[3],
 			'line'		=> $matches[4],
 		);
+		
+		#var_dump($error_properties);
 		
 		return $error_properties;
 	

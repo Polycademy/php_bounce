@@ -47,18 +47,40 @@ $(function(){
 			url: $bounce_base_url + $ajax_path,
 			type: "post",
 			data: serializedData,
+			dataType: 'json', //for response?
 			// callback handler that will be called on success
 			success: function(response, textStatus, jqXHR){
-				// log a message to the console
-				//console.log("Hooray, it worked!");
-			},
-			// callback handler that will be called on error
-			error: function(jqXHR, textStatus, errorThrown){
-				// log the error to the console
-				console.log(
-					"The following error occured: "+
-					textStatus, errorThrown
-				);
+				//response is ALWAYS a JSON object
+				
+				//we need
+				
+				//console.log(response);
+				//console.log(response[0]);
+				//console.log(response[0].message);
+				
+				//first test if response is a json object...
+				console.log(response);
+				//this works
+				//numerical keys need to be accessed like [0]
+				//associative keys need to be accessed like .blah.blah
+				console.log(response[0].message.type);
+				
+				//there'll be multiple response elements
+				$.each(response, function(index, value){
+					
+					//if this is an object and not just a string value, then we need to access it again...
+					if(typeof this === "object"){
+						console.log('It is an object!');
+						var error_output = "Oops! You have received a " + this.message.type + ", the error is due to '" + this.message.message + "'. Check out line " + this.message.line + " in your code.<br /><br />";
+						$('.output_container > div').append(error_output);
+					}
+					
+				});
+				//we need to parse this json object
+				//now that it is a json object, we have to test the value..
+				//console.log(response);
+				//
+				//$('.output_container > pre').append(response);
 			},
 			// callback handler that will be called on completion
 			// which means, either on success or error

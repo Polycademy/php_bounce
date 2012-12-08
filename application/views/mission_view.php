@@ -15,12 +15,18 @@
 						<section class="editor_container">
 							<h4>Code Pad</h4>
 							<?= form_open($code_submit, array('class'=>'form-horizontal mission_code_form')) ?>
-								<?= form_textarea(array('name' => 'code', 'id' => 'codemirror')) ?>
+								<?= form_textarea(
+									array(
+										'name'			=> 'code',
+										'id'			=> 'codemirror',
+										'autocomplete'	=> 'off', //firefox will autocomplete this
+									)
+								) ?>
 								<?= form_submit(array('name'=>'submit', 'type'=>'submit', 'value'=>'Execute!', 'class'=>'btn btn-primary code_submit')) ?>
 							<?= form_close() ?>
 						</section>
 						<section class="output_container">
-							<pre>BLAHLABLAH</pre>
+							<div></div>
 						</section>
 					</div>
 				</div>
