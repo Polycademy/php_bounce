@@ -3,43 +3,15 @@
 /**
 * Helper class to run a lint check on php code and get possible errors in useable form
 * Use lint_string/file and then get_parse_error
+* SINGULAR ERROR (single array)
 */
 class Phplint{
 
-	/**
-	* CI Super object
-	*
-	* @var string
-	*/
 	private $_CI;
-
-	/**
-	* Path to php binary to be used
-	*
-	* @var string
-	*/
 	protected $_php_binary = 'php';
-
-	/**
-	* Reference to parseError object in case of lint error
-	*
-	* @var parseError
-	*/
-	protected $_error;
-	
-	/**
-	* OS, Windows or Unix
-	*
-	* @var parseError
-	*/
+	protected $_error = false;
 	protected $_operating_system;
 
-	/**
-	* PHPLint Constructor method
-	*
-	* @param string $php Path to php binary to use
-	*
-	*/
 	public function __construct(){
 	
 		$this->_CI =& get_instance();		
@@ -49,19 +21,13 @@ class Phplint{
 	public function init_binary($php_binary = false){
 	
 		if(stripos(PHP_OS, 'win') !== false){
-		
 			$this->_operating_system = 'WIN';
-			
 		}else{
-		
 			$this->_operating_system = 'UNIX';
-		
 		}
 	
 		if (!empty($php_binary) && (!file_exists($php_binary) || !is_executable($php_binary))) {
-		
-			show_error('Specified PHP binary is not valid. Check if it is the right path.', 500);
-			
+			throw new Exception('PHP Binary specified in Phplint is not valid, check it if is the right path.');
 		}
 		
 		$this->_php_binary = $php_binary ? $php_binary : $this->_find_binary();
@@ -70,9 +36,7 @@ class Phplint{
 	
 	//will try to find binary for unix, or some default position for windows
 	private function _find_binary() {
-	
-		#var_dump($this->_operating_system);
-	
+		
 		if ($this->_operating_system == 'WIN') {
 		
 			return 'c:\wamp\bin\php\php5.3.0\php.exe';
@@ -83,47 +47,17 @@ class Phplint{
 			$php_binary = trim(shell_exec('which php'));
 			
 			if(!empty($php_binary)){
-			
 				return $php_binary;
-			
 			}else{
-				
-				show_error('PHP cannot find PHP Binary... sorry.', 500);
-				
+				throw new Exception('Phplint could not find a binary automatically.');
 			}
 			
 		}
 		
 	}
 	
-	//produces a line error array
 	public function get_parse_error() {
-	
 		return $this->_error;
-		
-	}
-
-	/**
-	* Run lint check on a file
-	*
-	* @param string $fname File to run lint check on
-	*
-	* @return boolean  True for no lint errors, false otherwise
-	*/
-	public function lint_file($fname) {
-	
-		if(!file_exists($fname)) {
-		
-			show_error("Trying to lint check on file $fname it was not found.");
-			
-		}
-		
-		$code = file_get_contents($fname);
-		
-		$code = $this->lint_string($code, $fname);
-		
-		return $code;
-		
 	}
 
 	/**
@@ -151,7 +85,7 @@ class Phplint{
 		$process = proc_open($this->_php_binary . ' -l', $descriptorspec, $pipes);
 		
 		if(!is_resource($process)) {
-			show_error('Could not open PHP Binary for linting');
+			throw new Exception('Phplint could not open up a process protocol to PHP binary.');
 		}
 		
 		//pump in the code!
@@ -169,18 +103,6 @@ class Phplint{
 		
 		$return_value = proc_close($process);
 		
-		/*
-		echo '<pre><h2>STDOUT FROM LINT</h2>';
-		var_dump($stdout);
-		echo '</pre>';
-		echo '<pre><h2>STDERR FROM LINT</h2>';
-		var_dump($stderr);
-		echo '</pre>';
-		echo '<pre><h2>RETURN_VALUE FROM LINT</h2>';
-		var_dump($return_value);
-		echo '</pre>';
-		*/
-		
 		//if we get an error
 		//On windows computers, return_value will be -1 on error, on UNIX, 255 on error
 		if($return_value == -1 OR $return_value == 255){
@@ -190,8 +112,6 @@ class Phplint{
 			
 		}
 		
-		//yes no errors! syntax is all good
-		$this->_error = null;
 		return true;
 		
 	}
@@ -206,15 +126,17 @@ class Phplint{
 		
 		preg_match('/^(.*):(.*) in (.*) on line (.*[0-9])/u', $error_line, $matches);
 		
-		$error_properties = array(
+		//only one error (explicitly set this)
+		$error = array(
 			'raw'		=> trim($error_line),
 			'type'		=> $matches[1],
-			'message'	=> trim($matches[2]),
 			'file'		=> (!empty($fname)) ? $fname : $matches[3],
+			//THESE TWO are the ones we're going to use
 			'line'		=> $matches[4],
+			'message'	=> $matches[1] . ': ' . trim($matches[2]),
 		);
 		
-		return $error_properties;
+		return $error;
 	
 	}
 

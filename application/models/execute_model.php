@@ -8,7 +8,7 @@ class Execute_model extends CI_Model {
 	private $_custom_whitelist = '';
 	private $_parameters = array();
 	private $_mission_graph = false;
-	public $execution_timespan;
+	private $_execution_timespan = '';
 
 	public function __construct(){
 	
@@ -16,19 +16,18 @@ class Execute_model extends CI_Model {
 		
 	}
 	
-	//init options
-	//$parameters must be an array!!
+	/**
+	 * Initiate all the necessary variables in order to run an execution routine
+	 *
+	 * Adds <?php to the front of test_Code if it doesn't have it. Short open tags are not allowed.
+	 * 
+	 * @param string $test_code
+	 * @param string $binary
+	 * @param array $parameters
+	 * @param array $custom_whitelist
+	 * @return boolean
+	 */
 	public function init_options($test_code, $binary, $parameters = array(), $custom_whitelist = ''){
-	
-		if(empty($test_code) OR empty($binary)){
-			$this->_errors[] = 'Requires test code and binary location.';
-			return false;
-		}
-		
-		if(!file_exists($binary) || !is_executable($binary)) {
-			$this->_errors[] = 'Binary not found!';
-			return false;
-		}
 		
 		//ADD <?php infront CANNOT USE short open tags for binary execution
 		if(!preg_match('/\A^(<\?php)(\s)+?/m', $test_code)){
@@ -44,17 +43,12 @@ class Execute_model extends CI_Model {
 	
 	}
 	
-	/** (SINGLE RUN)
-	* $options is an array of which checks to run
-		array('lint', 'whitelist', 'parse', 'mission_check', 'execute');
-	* returns false or string output
-	*/
-	
 	/**
 	 * Runs execution routine checks
 	 *
 	 * Take an array of options containing the names of all the checks to be done, then runs through each check.
 	 * If any of the checks fail, then returns false. Otherwise returns the execution output.
+	 * Checks need to be done in order of execution (array('lint', 'whitelist', 'parse', 'mission_check', 'execute');)
 	 * 
 	 * @param array $options
 	 * @return string/boolean
@@ -74,54 +68,27 @@ class Execute_model extends CI_Model {
 		
 		return $output;
 		
-		/*
-		
-		if(isset($options['lint'])){
-			if(!$this->lint()){
-				return false;
-			}
-		}
-		
-		if(isset($options['whitelist'])){
-			if(!$this->whitelist()){
-				return false;
-			}
-		}
-		
-		//you can do a parse without a mission check
-		if(isset($options['parse'])){
-			if(!$this->parse()){
-				return false;
-			}
-		}
-		
-		//but you can't do a mission_check without a parse
-		if(isset($options['mission_check']) AND isset($options['parse'])){
-			if(!$this->mission_check()){
-				return false;
-			}
-		}
-		
-		if(isset($options['execute'])){
-			if(!$output = $this->execute()){
-				return false;
-			}
-		}
-		
-		return $output;
-		*/
-		
 	}
 	
-	//get the mission_graph
+	/**
+	 * Get Mission Graph in case you want to see it directly or for helping create the xpath rules
+	 * 
+	 * @return xml/boolean
+	 */
 	public function get_mission_graph(){
+	
 		if(empty($this->_mission_graph)){
 			return false;
 		}
 		return $this->_mission_graph;
+		
 	}
 	
-	//get errors
+	/**
+	 * Get errors from all the routines in the model, this model aggregates all the errors
+	 * 
+	 * @return xml/boolean
+	 */
 	public function get_errors(){
 		
 		if(!empty($this->_errors)){
@@ -131,36 +98,51 @@ class Execute_model extends CI_Model {
 		
 	}
 	
-	//lint
+	/**
+	 * Get timespan of execution for benchmarking of user input
+	 * 
+	 * @return string
+	 */
+	public function get_timespan(){
+		
+		if(!empty($this->_execution_timespan)){
+			return $this->_execution_timespan;
+		}
+		return false;
+		
+	}
+	
+	/**
+	 * Lints the code, can be executed independently of run
+	 * 
+	 * @return boolean
+	 */
 	public function lint(){
 	
 		$this->phplint->init_binary($this->_binary);
 		
-		//if failed lint check
 		if(!$this->phplint->lint_string($this->_test_code, 'PHP Bounce')){
-		
-			//lint return an array of multidimensions with line and messages
+			//there will be only 1 parse error
 			$this->_errors[] = $this->phplint->get_parse_error();
 			return false;
-		
 		}
 		
 		return true;
 	
 	}
 	
-	//whitelist
+	/**
+	 * Whitelist the code, can be executed independently of run
+	 * 
+	 * @return boolean
+	 */
 	public function whitelist(){
 	
 		$this->phpwhitelist->init_options($this->_test_code, $this->_custom_whitelist);
 		
 		if(!$this->phpwhitelist->run_whitelist()){
-
-			//whitelist returns an array of errors
-			foreach($this->phpwhitelist->get_errors() as $whitelist_error){
-				$this->_errors[] = $whitelist_error;
-			}
-						
+			//there can be multiple whitelist errors so we pass directly
+			$this->_errors = $this->phpwhitelist->get_errors();
 			return false;
 		}
 		
@@ -168,7 +150,11 @@ class Execute_model extends CI_Model {
 	
 	}
 	
-	//parse
+	/**
+	 * Parses the code into an abstract syntax tree so we can do mission checks, can be ran independently
+	 * 
+	 * @return boolean
+	 */
 	public function parse(){
 	
 		//init the parser
@@ -194,9 +180,14 @@ class Execute_model extends CI_Model {
 			
 		}catch(PHPParser_Error $e){
 		
-			//single one line error here
 			//unlikely to happen if lint has passed and whitelist passed...
-			$this->_errors[] = 'Parse Error: ' . $e->getMessage();
+			//there will be only 1 parse error, so just declare the array here
+			$this->_errors = array(
+				0	=> array(
+					'line'		=> false,
+					'message'	=> 'XML Parsing Error: ' . $e->getMessage(),
+				),
+			);
 			
 			return false;
 		
@@ -204,70 +195,32 @@ class Execute_model extends CI_Model {
 	
 	}
 	
-	//mission_check
+	/**
+	 * Does the mission check on the code, requires parameters and mission graph from parse, can be ran independently
+	 * 
+	 * @return boolean
+	 */
 	public function mission_check(){
-	
-		if(empty($this->_mission_graph) OR empty($this->_parameters)){
-		
-			$this->_errors[] = 'The mission graph or parameters has not been set. Cannot do a mission check.';
-			return false;
-			
-		}
 		
 		$this->missionchecker->init_options($this->_mission_graph, $this->_parameters);
 		
 		if(!$this->missionchecker->graph_check()){
-		
-			//Simple line error (there is no line number here)
-			//Will return an array of messages
-			foreach($this->missionchecker->get_error_messages() as $mission_error){
-				$this->_errors[] = $mission_error;
-			}
+			//there can be multiple missionchecker errors so pass directly
+			$this->_errors = $this->missionchecker->get_error_messages();
 			return false;
-			
 		}
 		
 		return true;
-		
-		//mission parameters are build like this:
-		//test_name => test_block
-		//within test_block['paths'] there can be multiple paths to check, and each path can either by singular or multibranch tests
-		//this is done via creating subarrays, and the keys of the arrays represent parent paths, the subpaths represent multibranches
-		//all path tests are done with "AND"
-		//except at the base path, in which case there can be multiple paths corresponding to multiple test messages
-		//within test_block['tests'] there can be multiple tests
-		//each test's key is the error message
-		//each test's values is an array of an ordered value set that is meant to be passed to the paths
-		//the number of values need to correspond with the number of branch endpoints for each branch
-		/*EXAMPLE ONLY
-		$parameters = array(
-			'variable_declaration'	=> array(
-				'paths'	=> array(
-					//basepath is single endpoint, its array is multiendpoint
-					'//node:Expr_Assign' => array(
-						'subNode:var/node:Expr_Variable' => array(
-							'subNode:name/scalar:string',
-						),
-						'subNode:expr/node:Scalar_String/subNode:value/scalar:string',
-					),
-					'//node:Expr_Assign/subNode:var/node:Expr_Variable/subNode:name/scalar:string',
-				),
-				'tests'	=> array(
-					'Error, you need to make sure to declare a variable called [[my_chinese_surname]] with the value [[Qiu]]' => array(
-						'my_chinese_surname',
-						'Qiu'
-					),
-					'Error, you need to make sure to declare a variable called [[my_chinese_surname]]' => array(
-						'my_chinese_surname',
-					),
-				),
-			),
-		);
-		*/
 	
 	}
 	
-	//execute
+	/**
+	 * Finally executes the code, returns either the output with execution timespan or false on error, can be ran independently
+	 *
+	 * Has the ability to setup custom options, unlikely to be used as everything has been setup already...
+	 * 
+	 * @return boolean
+	 */
 	public function execute($options = false){
 	
 		$fake_server_env_prepend_file = APPPATH . 'helpers/phpsandbox_prepend_helper.php';
@@ -287,17 +240,15 @@ class Execute_model extends CI_Model {
 		$this->phpsandboxer->init_env($fake_server_env_prepend_file);
 		$this->phpsandboxer->build_cli_options();
 		
-		//if true, then it worked!
 		if($execution_output = $this->phpsandboxer->execute_code($this->_test_code, 'PHP Bounce')){
-			$this->execution_timespan = $this->phpsandboxer->get_time_span();		
+			$this->_execution_timespan = $this->phpsandboxer->get_time_span();		
 			return $execution_output;
 		}else{
-		
-			$this->_errors[] = $this->phpsandboxer->get_parse_error();
-			
+			//there is only 1 error from parse error, so we can declare it here
+			$this->_errors[] = $this->phpsandboxer->get_parse_error()();
 			return false;
 		}
-			
+		
 	}
 	
 }

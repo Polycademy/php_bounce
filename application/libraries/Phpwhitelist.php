@@ -2,9 +2,9 @@
 
 /**
 * Token sanitiser for php code
-* DOES NOT SANITISE AGAINST CUSTOM NAME FUNCTIONS.. which is good
+* SANITISES CUSTOM NAME FUNCTIONS & CUSTOM NAME CLASSES
 * DOES NOT SANITISE AGAINST CONTROL STRUCTURES AND LANGUAGE CONSTRUCTS
-* THIS DOES NOT SANITISE CLASSES
+* MULTIPLE ERRORS (multiple array)
 */
 class Phpwhitelist{
 
@@ -42,9 +42,7 @@ class Phpwhitelist{
 	public function run_whitelist(){
 	
 		if(empty($this->_test_code) OR empty($this->_whitelist)){
-			$this->_errors = array(
-				'Please set up the options for whitelisting, we need testcode and whitelist.'
-			);
+			throw new Exception('Without a whitelist and testcode, then Phpwhitelist cannot do any whitelisting.');
 			return false;
 		}
 		
@@ -55,12 +53,9 @@ class Phpwhitelist{
 		
 		//setup the tokens
 		$tokens = token_get_all($this->_test_code);
-		
-		#var_dump($tokens);
-		
+				
 		//cycle through each token to do a check
 		foreach($tokens as $token) {
-		
 		
 			//not all tokens are arrays
 			//the tokens that are arrays are the ones we can check against
@@ -69,10 +64,6 @@ class Phpwhitelist{
 				$function_id = $token[0];
 				$function_name = $token[1];
 				$line_number = $token[2];
-				#var_dump($function_id);
-				#var_dump($function_name);
-				#var_dump($line_number);
-
 				
 				switch($function_id){
 				
@@ -90,11 +81,15 @@ class Phpwhitelist{
 						
 						//if a particular function_name cannot be found within the allowed functions...
 						if(!isset($allowed_functions[$function_name])){
-							$this->_errors[] = 'Sorry this function call [' . $function_name . '] is not allowed on PHP Bounce, it is on line ' . $line_number;
+						
+							$this->_errors[] = array(
+								'line'		=> $line_number,
+								'message'	=> 'Sorry this function call [' . $function_name . '] is not allowed on PHP Bounce.',
+							);
+						
 						}
 					
 					}
-					
 					
 				}
 				
@@ -102,10 +97,12 @@ class Phpwhitelist{
 		
 		}
 		
+		//if there are errors, then whitelist failed
 		if(!empty($this->_errors)){
 			return false;
 		}
 		
+		//otherwise pass on!
 		return true;
 	
 	}

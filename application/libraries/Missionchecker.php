@@ -3,7 +3,7 @@
 /**
 * Takes two arrays, and searches if one array is in the other
 * If not pump out an error msg
-* Take care to compare error messages?
+* MULTIPLE ERRORS (multiple array)
 */
 class Missionchecker{
 
@@ -23,9 +23,7 @@ class Missionchecker{
 		$this->_graph = $graph;
 		
 		$this->_parameters = $this->_build_xpaths($parameters);
-		
-		#var_dump($this->_parameters);
-	
+			
 	}
 	
 	protected function _build_xpaths($parameters){
@@ -124,12 +122,8 @@ class Missionchecker{
 	public function graph_check(){
 	
 		if(empty($this->_graph) OR empty($this->_parameters)){
-		
-			$this->_errors = array(
-				'Please set up the options for checking, we need a graph and parameters.'
-			);
+			throw new Exception('Please setup the graph and parameters for the Missionchecker');
 			return false;
-			
 		}
 		
 		$xml_doc = new DOMDocument;
@@ -150,7 +144,12 @@ class Missionchecker{
 				//if no match, then put out the errors
 				//$find_code is part of the DOMNode class (you need foreach to loop across them) //check doc if you want to query out some stuff
 				if(empty($find_code->length)){
-					$this->_errors[] = $error_msg;
+				
+					$this->_errors[] = array(
+						'line'		=> false,
+						'message'	=> $error_msg,
+					);
+					
 				}
 			
 			}

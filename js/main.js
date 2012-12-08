@@ -50,47 +50,42 @@ $(function(){
 			dataType: 'json', //for response?
 			// callback handler that will be called on success
 			success: function(response, textStatus, jqXHR){
-				//response is ALWAYS a JSON object
-				
-				//STILL NEED TO TEST WHITELIST ERROR...
-				//response comes in as like
-				/*
-					response =>
-						0 => object =>      //<---- We have errors like this
-								message
-								type
-								..etc
-						1 => string... etc //<----- these are usually output or single error messages, or mission check messages...
-						..etc
-				*/
+			
 				//numerical keys need to be accessed like [0]
 				//associative keys need to be accessed like .blah.blah
+				
+				/* 
+				 * We're expecting response to be like this:
+				 * array(
+				 * 		0 => array(
+				 *			'line'	=> bool/int
+				 *			'message'	=> 'string',
+				 *		),
+				 * );
+				 */
 				
 				//there'll be multiple response elements
 				$.each(response, function(index, value){
 					//console.log(value);
 					//console.log(index);
 					
-					//if this is an object and not just a string value, then we need to access it again...
+					//
 					if(typeof value === "object"){
 						//console.log("THIS IS AN OBJECT");	
-						//console.log(value.type);
+						console.log(value.line);
+						var error_output = "You have a received an error, " + value.message + ".";
 						
-						var error_output = "Oops! You have received a " + value.type + ", the error is due to '" + value.message + "'. Check out line " + value.line + " in your code.<br />";
+						if(value.line){
+							error_output = error_output + " Check out line " + value.line;
+							//setting marker at editor (line -1)
+							editor.setMarker(value.line - 1, '● %N%');
+						}
+						
+						error_output = error_output + "<br />";
 						
 						$(".output_container > div").append(error_output);
 						
-						//setting marker at editor (line -1)
-						editor.setMarker(value.line - 1, '● %N%');
-						
-					}else{
-					
-						//if not an object, then it is the output
-						var output = value + '<br />';
-						$(".output_container > div").append(output);
-					
 					}
-					
 					
 				});
 				

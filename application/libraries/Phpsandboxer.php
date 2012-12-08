@@ -11,6 +11,7 @@
 	//call execute_code
 	//call execution_time
 	//call errors...
+* SINGULAR ERROR (single array)
 */
 class Phpsandboxer{
 
@@ -41,7 +42,7 @@ class Phpsandboxer{
 	//code to be run
 	protected $_code;
 	//error array
-	protected $_error;
+	protected $_error = false;
 	//CI super object
 	protected $_CI;
 
@@ -55,7 +56,6 @@ class Phpsandboxer{
 	//merges it so, will replace only some of the variables
 	public function init_options($options = array()){
 		$this->_options = array_merge($this->_options, $options);
-		#var_dump($this->_options);
 		return true;
 	}
 	
@@ -68,7 +68,7 @@ class Phpsandboxer{
 		}
 	
 		if (!empty($php_binary) && (!file_exists($php_binary) || !is_executable($php_binary))) {
-			show_error('Specified PHP binary in PHPSandbox is not valid. Check if it is the right path.', 500);
+			throw new Exception('Specified PHP binary in PHPSandbox is not valid. Check if it is the right path.');
 		}
 		
 		$this->_php_binary = $php_binary ? $php_binary : $this->_find_binary();
@@ -87,7 +87,7 @@ class Phpsandboxer{
 			if(!empty($php_binary)){
 				return $php_binary;
 			}else{
-				show_error('PHPSandbox cannot find PHP Binary... sorry.', 500);
+				throw new Exception('PHPSandbox cannot find PHP Binary automatically.');
 			}
 			
 		}
@@ -104,7 +104,7 @@ class Phpsandboxer{
 				$this->_options['auto_prepend_file'] = $path_to_file;
 				return true;
 			}else{
-				show_error('PHPSandbox cannot find the auto_prepend_file for CLI. Check your filepath sorry.', 500);
+				throw new Exception('PHPSandbox cannot find the auto_prepend_file for CLI. Check your filepath sorry.');
 			}
 		}
 		
@@ -130,12 +130,6 @@ class Phpsandboxer{
 		$functions = array_flip($functions);
 		
 		$this->_options['disable_functions'] = implode(',', $functions);
-		
-		/*
-		echo '<pre>';
-		var_dump($this->_options['disable_functions']);
-		echo '</pre>';
-		*/
 		
 		if($force_rebuild){
 			$this->build_cli_options();
@@ -210,10 +204,6 @@ class Phpsandboxer{
 			
 		}
 		
-		//chroot (should be based on filepath to the execution environment...) maybe not needed?
-		//dont know if this is needed
-		#$this->_cli_options .= '-d chroot="' . $this->_options['chroot'] . '" ';
-		
 		//trim off total whitespace on edges
 		$this->_cli_options = trim($this->_cli_options);
 	
@@ -225,7 +215,7 @@ class Phpsandboxer{
 			return false;
 		}
 		if(empty($this->_cli_options)){
-			show_error('CLI options have not been built yet, you cannot run the shell, it would be dangerous!', 500);
+			throw new Exception('CLI options have not been built yet, you cannot run the shell, it would be dangerous!');
 		}
 		$this->_code = $code;
 		
@@ -244,7 +234,7 @@ class Phpsandboxer{
 		$process = proc_open($this->_php_binary . ' ' . $this->_cli_options, $descriptorspec, $pipes);
 		
 		if(!is_resource($process)){
-			show_error('Could not open PHP Binary for execution of code', 500);
+			throw new Exception('PHPSandbox could not open up a process protocol to PHP binary.');
 		}
 		
 		//pump in the code!
@@ -265,32 +255,12 @@ class Phpsandboxer{
 		//finish the race
 		$this->_run_end_time = $this->_time_stamp();
 		
-		/*
-		echo '<pre><h2>CLI ARGUMENTS</h2>';
-		var_dump($this->_php_binary . ' ' . $this->_cli_options);
-		echo '</pre>';
-		echo '<pre><h2>STDOUT FROM EXECUTION</h2>';
-		var_dump(htmlentities($stdout));
-		echo '</pre>';
-		echo '<pre><h2>STDERR FROM EXECUTION</h2>';
-		var_dump($stderr);
-		echo '</pre>';
-		echo '<pre><h2>RETURN_VALUE FROM EXECUTION</h2>';
-		var_dump($return_value);
-		echo '</pre>';
-		*/
-		
-		#echo($stderr);
-		#var_dump($stdout);
-		
-		
 		if(!empty($stderr)){
 			$this->_error = $this->_parse_error($stderr, $fname);
 			return false;
 		}
 		
 		//yes no errors! syntax is all good
-		$this->_error = false;
 		return $stdout;
 		
 	}
@@ -305,24 +275,22 @@ class Phpsandboxer{
 		
 		preg_match('/^(.*):(.*) in (.*) on line (.*[0-9])/u', $error_line, $matches);
 		
-		$error_properties = array(
+		//only one error (explicitly set this)
+		$error = array(
 			'raw'		=> trim($error_line),
 			'type'		=> $matches[1],
-			'message'	=> trim($matches[2]),
 			'file'		=> (!empty($fname)) ? $fname : $matches[3],
+			//THESE TWO are the ones we're going to use
 			'line'		=> $matches[4],
+			'message'	=> $matches[1] . ': ' . trim($matches[2]),
 		);
-		
-		#var_dump($error_properties);
-		
-		return $error_properties;
+				
+		return $error;
 	
 	}
 	
 	public function get_parse_error() {
-	
 		return $this->_error;
-		
 	}
 	
 	//gets it in seconds
