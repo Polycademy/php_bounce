@@ -16,6 +16,13 @@
 	border-radius: @radius;
 }
 
+.border_image(@url, @width, @style){
+	-moz-border-image: url(@url) @width @style;
+	-webkit-border-image: url(@url) @width @style;
+	-o-border-image: url(@url) @width @style;
+	border-image: url(@url) @width @style;
+}
+
 /* ==========================================================================
    CONTAINERS
    ========================================================================== */
@@ -25,7 +32,7 @@ body {
 	-webkit-font-smoothing: antialiased;
 	font-smoothing: antialiased;
 	color: #464a51;
-	background: #39cbfb;
+	background: url('../img/bg3.png') repeat;
 }
 
 .container{
@@ -98,6 +105,7 @@ header{
    FOOTER
    ========================================================================== */
 footer{
+	margin-top: 25px;
 	.footer_link{
 		margin: 40px 0;
 	}
@@ -117,6 +125,8 @@ footer{
 	margin: 0 auto;
 	.code_editor_form{
 		.CodeMirror{
+			border: 6px solid #e3e3e3;
+			.border_image('../img/code_container_border7.png', 6, repeat);
 			display: block;
 			margin: 0 auto;
 		}
@@ -131,8 +141,8 @@ footer{
 	.output_container{
 		height: 100px;
 		background: #1c6982;
-		border: 1px solid #ccc;
-		.border_radius(4px);
+		border: 6px solid #e3e3e3;
+		.border_image('../img/code_container_border7.png', 6, repeat);
 		padding: 20px;
 		overflow: auto;
 		color: #fff;
@@ -205,23 +215,44 @@ footer{
    INTERACTIVE SHELL
    ========================================================================== */
 .mission_testing{
-	.mission_parameters{
-		border: 1px solid #80bbce;
-		background: #c9f2ff;
-		height: 502px;
-		overflow: auto;
-		.parameter_container{
+	.mission_sitrep{
+		.mission_description{
 			padding: 10px 20px;
-			> h4{
-				margin-bottom: 15px;
+			font-size: 17px;
+			line-height: 24px;
+			font-family: Arial, Helvetica, sans-serif;
+			pre{
+				padding: 1px 6px;
+			}
+			code{
+				padding: 1px 6px;
+			}
+			pre, code{
+				font-size: 14px;
+			}
+			p, ul, ol, img, object, iframe, blockquote, pre{
+				margin-bottom: 14px;
+			}
+			p + p{
+				text-indent: 3%;
 			}
 		}
 	}
+	
+	.affix{
+		top: 50px;
+		float: left;
+		display: inline;
+	}
+	
 	.mission_execution{
-		border: 1px solid #80bbce;
-		background: #c9f2ff;
+		margin: 0;
 		.editor_container{
-			margin: 20px 20px;
+			opacity: 0.95;
+			.CodeMirror{
+				border: 6px solid #e3e3e3;
+				.border_image('../img/code_container_border7.png', 6, repeat);
+			}
 			.CodeMirror-scroll{
 				height: 300px;
 			}
@@ -231,15 +262,15 @@ footer{
 			}
 		}
 		.output_container{
+			opacity: 0.95;
 			clear: both;
-			margin: 20px 20px;
+			border: 6px solid #e3e3e3;
+			.border_image('../img/code_container_border7.png', 6, repeat);
 			> div{
-				border: 1px solid #ccc;
-				.border_radius(4px);
 				background: #1C6982;
 				color: #fff;
 				padding: 10px;
-				height: 90px;
+				height: 100px;
 				overflow: auto;
 				.success{
 					color: #f3da08;
@@ -445,8 +476,6 @@ pre .xml .cdata {
    CODE MIRROR
    ========================================================================== */
  .CodeMirror {
-	.border_radius(4px);
-	border: 1px solid #90a9ba;
 	line-height: 1em;
 	font-family: monospace;
 	/* Necessary so the scrollbar can be absolutely positioned within the wrapper on Lion. */
