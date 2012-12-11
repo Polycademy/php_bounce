@@ -108,7 +108,7 @@ $(function(){
 							}
 							
 						}
-												
+									
 						//if value.output is not a boolean and non-empty, then that means there was something outputted by the execution!
 						//if the message was false, that means there was not success/error message meaning this was not a mission
 						//therefore we can just replace console_output with the value.output and forget about any of those errors
