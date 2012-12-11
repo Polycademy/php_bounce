@@ -71,6 +71,11 @@ class Mission_editor extends CI_Controller {
 				'field'   => 'parameters',
 				'label'   => 'Mission Parameters',
 				'rules'   => 'required',
+			),
+			array(
+				'field'   => 'default',
+				'label'   => 'Mission Default',
+				'rules'   => '',
 			)
 		);
 		
@@ -85,6 +90,7 @@ class Mission_editor extends CI_Controller {
 				'mission_number'=> $this->input->post('number', true),
 				'parameters'	=> $this->input->post('parameters'),
 				'whitelist'		=> trim($this->input->post('whitelist'), ','),
+				'default'		=> $this->input->post('default'),
 			);
 			
 			if(!$this->Mission_model->add_mission($new_mission)){
@@ -160,6 +166,11 @@ class Mission_editor extends CI_Controller {
 				'field'   => 'parameters',
 				'label'   => 'Mission Parameters',
 				'rules'   => 'required',
+			),
+			array(
+				'field'   => 'default',
+				'label'   => 'Mission Default',
+				'rules'   => '',
 			)
 		);
 		
@@ -173,6 +184,7 @@ class Mission_editor extends CI_Controller {
 				'mission_number'=> $this->input->post('number', true),
 				'parameters'	=> $this->input->post('parameters'),
 				'whitelist'		=> trim($this->input->post('whitelist'), ','),
+				'default'		=> $this->input->post('default'),
 			);
 			
 			if(!$this->Mission_model->update_mission($num, $updated_mission)){
@@ -192,7 +204,7 @@ class Mission_editor extends CI_Controller {
 		
 		//get the data
 		$mission_data = $this->Mission_model->get_mission($num);
-
+		
 		//$missions['parameters'] returns as an array, so we need to export it to be shown
 		//codemirror takes the slashes that var_export has away, so we need to re add it back in
 		$mission_data['parameters'] = addslashes(var_export($mission_data['parameters'], true));

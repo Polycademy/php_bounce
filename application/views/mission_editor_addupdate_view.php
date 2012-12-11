@@ -68,6 +68,14 @@
 									'value'	=>	(!empty($mission_data['parameters'])) ? $mission_data['parameters'] : set_value('parameters'),
 								)
 							) ?>
+							<h4>Default Code</h4>
+							<?= form_textarea(
+								array(
+									'name'	=> 'default',
+									'id'	=> 'codemirror_default',
+									'value'	=>	(!empty($mission_data['default'])) ? $mission_data['default'] : set_value('default'),
+								)
+							) ?>
 						</section>
 					</div>
 				</div>
@@ -151,6 +159,17 @@
 					autoClearEmptyLines: true,
 				});
 				var editor = CodeMirror.fromTextArea(document.getElementById("codemirror_xml"), {
+					lineNumbers: true,
+					matchBrackets: true,
+					mode: "text/x-php",
+					indentUnit: 4,
+					indentWithTabs: true,
+					enterMode: "keep",
+					tabMode: "shift",
+					theme: "rubyblue",
+					autoClearEmptyLines: true,
+				});
+				var editor = CodeMirror.fromTextArea(document.getElementById("codemirror_default"), {
 					lineNumbers: true,
 					matchBrackets: true,
 					mode: "text/x-php",

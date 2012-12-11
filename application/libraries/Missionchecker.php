@@ -22,6 +22,8 @@ class Missionchecker{
 	
 		$this->_graph = $graph;
 		
+		#var_dump($graph);
+		
 		$this->_parameters = $this->_build_xpaths($parameters);
 		
 		#var_dump($this->_parameters);
@@ -72,6 +74,9 @@ class Missionchecker{
 				$value = vsprintf($value, $test_block['tests'][$key]);
 			}
 			$test_block['map'] = $map;
+			
+			#var_dump($test_block['map']);
+			#var_dump($test_block);
 			
 		}//END TESTBLOCK LOOP
 		

@@ -19,6 +19,7 @@
 										array(
 											'name'			=> 'code',
 											'id'			=> 'codemirror',
+											'value'			=> $mission_data['default'],
 										)
 									) ?>
 									<?= form_submit(array('name'=>'submit', 'type'=>'submit', 'value'=>'Execute!', 'class'=>'btn btn-primary code_submit')) ?>
