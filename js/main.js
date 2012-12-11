@@ -31,6 +31,11 @@ $(function(){
 	
 });
 
+//FOR highlight js
+$(document).ready(function() {
+	$('.mission_description pre > code').each(function(i, e) {hljs.highlightBlock(e, '<span class="indent">\t</span>')});
+});
+
 $(function(){
 
 	$(".mission_code_form").submit(function(event){

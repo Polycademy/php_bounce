@@ -7,7 +7,8 @@
 		</footer
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="<?= base_url($js_assets) ?>/jquery/jquery-1.8.2.min.js"><\/script>')</script>
-
+		
+		<script src="<?= base_url($js_assets) ?>/highlight/highlight.pack.js"></script>
         <script src="<?= base_url($js_assets) ?>/bootstrap/bootstrap.min.js"></script>
         <script src="<?= base_url($js_assets) ?>/main.js"></script>
 		
