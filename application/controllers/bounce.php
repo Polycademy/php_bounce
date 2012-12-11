@@ -79,9 +79,7 @@ class Bounce extends CI_Controller {
 			$this->_ajax_execute_error('No code to execute!');
 			return false;
 		}
-		
-		#$this->firephp->log('Test Code Exists');
-		
+				
 		//building up the options in order of execution...
 		
 		$options[] = 'lint';
@@ -101,8 +99,14 @@ class Bounce extends CI_Controller {
 		
 		$options[] = 'execute';
 		
+		$output_check = false;
+		if(!empty($mission_data['output'])){
+			$options[] = 'output_check';
+			$output_check = $mission_data['output'];
+		}
+		
 		//initating the options for execute model, then running the exection
-		$this->Execute_model->init_options($test_code, $php_binary, $mission_parameters, $whitelist);
+		$this->Execute_model->init_options($test_code, $php_binary, $mission_parameters, $whitelist, $output_check);
 		
 		//we are trying to catch an exception if any exceptional errors arise (errors due to program flow)
 		try{
@@ -120,15 +124,18 @@ class Bounce extends CI_Controller {
 		}
 		
 		//if we are running against parameters, then we are in a mission, then add a success message
+		$message = false;
 		if($run_parameters != 'false'){
-			$output = $output . '<br /><span class="success">Well done you succeeded! Move on to the next mission!</span>';
+			$message = 'Well done you succeeded! Move on to the next mission!';
 		}
 		//if not, then keep going
 		
 		$output = array(
 			0	=> array(
 				'line'		=> false,
-				'message'	=> $output,
+				'message'	=> $message, //message will be false when run_parameters is false
+				'output'	=> $output, //actual execution output
+				'status'	=> true,
 			),
 		);
 		
@@ -176,13 +183,17 @@ class Bounce extends CI_Controller {
 				0 => array(
 					'line'		=> false,
 					'message'	=> $errors,
-				)
+					)
 			);
 			
 		}
 		
-		//$this->firephp->log($errors, 'At Ajax_Execute_Error');
-		
+		//add in false for error messages
+		foreach($errors as $key => &$value){
+			$value['output'] = $this->Execute_model->get_execution_output();
+			$value['status'] = false;
+		}
+				
 		$this->_view_data += array(
 			'response'	=> $errors,
 		);

@@ -63,6 +63,11 @@ class Mission_editor extends CI_Controller {
 				'rules'   => 'trim|required|integer|callback_mission_number_check',
 			),
 			array(
+				'field'   => 'output',
+				'label'   => 'Mission Output',
+				'rules'   => '',
+			),
+			array(
 				'field'   => 'whitelist',
 				'label'   => 'Mission Whitelist',
 				'rules'   => '',
@@ -76,7 +81,7 @@ class Mission_editor extends CI_Controller {
 				'field'   => 'default',
 				'label'   => 'Mission Default',
 				'rules'   => '',
-			)
+			),
 		);
 		
 		$this->form_validation->set_rules($validation_rules);
@@ -88,8 +93,9 @@ class Mission_editor extends CI_Controller {
 				'title'			=> $this->input->post('title', true),
 				'description'	=> $this->input->post('description'),
 				'mission_number'=> $this->input->post('number', true),
-				'parameters'	=> $this->input->post('parameters'),
 				'whitelist'		=> trim($this->input->post('whitelist'), ','),
+				'output'		=> $this->input->post('output'),
+				'parameters'	=> $this->input->post('parameters'),
 				'default'		=> $this->input->post('default'),
 			);
 			
@@ -158,6 +164,11 @@ class Mission_editor extends CI_Controller {
 				'rules'   => 'trim|required|integer',
 			),
 			array(
+				'field'   => 'output',
+				'label'   => 'Mission Output',
+				'rules'   => '',
+			),
+			array(
 				'field'   => 'whitelist',
 				'label'   => 'Mission Whitelist',
 				'rules'   => '',
@@ -182,8 +193,9 @@ class Mission_editor extends CI_Controller {
 				'title'			=> $this->input->post('title', true),
 				'description'	=> $this->input->post('description'),
 				'mission_number'=> $this->input->post('number', true),
-				'parameters'	=> $this->input->post('parameters'),
 				'whitelist'		=> trim($this->input->post('whitelist'), ','),
+				'output'		=> $this->input->post('output'),
+				'parameters'	=> $this->input->post('parameters'),
 				'default'		=> $this->input->post('default'),
 			);
 			

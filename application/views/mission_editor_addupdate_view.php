@@ -38,6 +38,15 @@
 									'value'	=> (!empty($mission_data['description'])) ? $mission_data['description'] : set_value('description')
 								)
 							) ?>
+							<?= form_label('Mission Output', 'mission_output_input') ?>
+							<?= form_textarea(
+								array(
+									'name'	=> 'output',
+									'class'	=> 'input-block-level',
+									'id'	=> 'mission_output_input',
+									'value'	=> (!empty($mission_data['output'])) ? $mission_data['output'] : set_value('output')
+								)
+							) ?>
 							<?= form_label('Mission Whitelist (optional & comma separated)', 'mission_description_input') ?>
 							<?= form_input(
 								array(

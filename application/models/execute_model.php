@@ -9,6 +9,8 @@ class Execute_model extends CI_Model {
 	private $_parameters = array();
 	private $_mission_graph = false;
 	private $_execution_timespan = '';
+	private $_execution_output = '';
+	private $_output = false;
 
 	public function __construct(){
 	
@@ -25,9 +27,10 @@ class Execute_model extends CI_Model {
 	 * @param string $binary
 	 * @param array $parameters
 	 * @param array $custom_whitelist
+	 * @param string $output - for output checking
 	 * @return boolean
 	 */
-	public function init_options($test_code, $binary, $parameters = array(), $custom_whitelist = ''){
+	public function init_options($test_code, $binary, $parameters = array(), $custom_whitelist = '', $output = false){
 		
 		//ADD <?php infront CANNOT USE short open tags for binary execution
 		if(!preg_match('/\A^(<\?php)(\s)+?/m', $test_code)){
@@ -38,6 +41,7 @@ class Execute_model extends CI_Model {
 		$this->_binary = $binary;
 		$this->_custom_whitelist = $custom_whitelist;
 		$this->_parameters = $parameters;
+		$this->_output = $output;
 		
 		return true;
 	
@@ -67,7 +71,6 @@ class Execute_model extends CI_Model {
 			//if output is STRICTLY false
 			//allows empty strings to pass through
 			if($output === false){
-				#var_dump($output);
 				return false;
 			}
 		}
@@ -117,6 +120,23 @@ class Execute_model extends CI_Model {
 			return $this->_execution_timespan;
 		}
 		return false;
+		
+	}
+	
+	/**
+	 * Only used when there was an output check, this gets the execution output, so it can be combined with the error messages
+	 * that is produced by the output check, otherwise we wouldn't be able to see what the execution output was when the output
+	 * check returned false
+	 * 
+	 * @return string
+	 */
+	public function get_execution_output(){
+	
+		if($this->_output){
+			return $this->_execution_output;
+		}else{
+			return false;
+		}
 		
 	}
 	
@@ -256,7 +276,8 @@ class Execute_model extends CI_Model {
 		//basically ANYTHING but false because empty strings are good to go aswell!
 		if($execution_output !== false){
 			#var_dump($execution_output);
-			$this->_execution_timespan = $this->phpsandboxer->get_time_span();		
+			$this->_execution_timespan = $this->phpsandboxer->get_time_span();
+			$this->_execution_output = $execution_output;
 			return $execution_output;
 		}else{
 			//there is only 1 error from parse error, so we can declare it here
@@ -264,6 +285,32 @@ class Execute_model extends CI_Model {
 			return false;
 		}
 		
+	}
+	
+	/**
+	 * Checks the final output against the output check. If the check passes, it will pass & return the full output.
+	 * 
+	 * @return boolean/passes output on if it works
+	 */
+	public function output_check(){
+	
+		if($this->_output){
+		
+			if($this->_output == $this->_execution_output){
+				return $this->_execution_output;
+			}
+			
+			$this->_errors = array(
+				0	=> array(
+					'line'		=> false,
+					'message'	=> 'Sorry incorrect output, try again!',
+				),
+			);
+			
+			return false;
+			
+		}
+	
 	}
 	
 }

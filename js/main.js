@@ -76,28 +76,55 @@ $(function(){
 					//console.log(value);
 					//console.log(index);
 					
-					
+					//THIS WILL ALWAYS RUN because currently all values are objects
 					if(typeof value === "object"){
 						//console.log("THIS IS AN OBJECT");	
 						//console.log(value.line);
 						
 						//setup the message
-						var error_output = value.message;
+						//if value.message is false.. then we are not going to append onto the message
+						var console_output = value.message;
 						
-						//is there a line number for this error?
-						if(typeof value.line === "number"){
+						//if it is an error
+						if(value.status === false){
 						
-							error_output = error_output + ". You should check out line " + value.line + " in your code.";
-							//setting marker at editor (line -1)
-							editor.setMarker(value.line - 1, '● %N%');
+							//if this is an error, then there may be a line number
+							if(typeof value.line === "number"){
 							
+								console_output = console_output + ". You should check out line " + value.line + " in your code.";
+								//setting marker at editor (line -1)
+								editor.setMarker(value.line - 1, '● %N%');
+								
+							}
+							
+							console_output = "<span class=\"output_error\">" + console_output + "</span>";
+						
+						//if it is not an error
+						}else if(value.status === true){
+						
+							//if this is not a mission, there would not be a value.message
+							if(value.message){
+								console_output = "<span class=\"success\">" + console_output + "</span>";
+							}
+							
+						}
+												
+						//if value.output is not a boolean and non-empty, then that means there was something outputted by the execution!
+						//if the message was false, that means there was not success/error message meaning this was not a mission
+						//therefore we can just replace console_output with the value.output and forget about any of those errors
+						if(typeof value.output !== "boolean" && value.output !== ""){
+							if(value.message !== false){
+								console_output = value.output + "<br />" + console_output;
+							}else{
+								console_output = value.output
+							}
 						}
 						
 						//we want some spacing don't we?
-						error_output = error_output + "<br />";
+						console_output = console_output + "<br />";
 						
 						//append onto the div
-						$(".output_container > div").append(error_output);
+						$(".output_container > div").append(console_output);
 						
 					}
 					
