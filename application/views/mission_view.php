@@ -2,11 +2,8 @@
 		<div class="container">
 			<? if(!empty($mission_data)){ ?>
 				<article class="mission_testing">
-				
 					<h1><?=$mission_data['title']?></h1>
-					
 					<div class="mission_grid row">
-					
 						<section class="mission_sitrep span6">
 							<div class="mission_description">
 								<?=$mission_data['description']?>
