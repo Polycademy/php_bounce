@@ -25,8 +25,14 @@ class Mission_editor extends CI_Controller {
 		//$missions is returned as an array
 		$missions = $this->Mission_model->get_all_missions();
 		//$missions['parameters'] returns as an array, so we need to export it to be shown
-		foreach($missions as &$mission){
-			$mission['parameters'] = var_export($mission['parameters'], true);
+		if(!empty($missions)){
+		
+			foreach($missions as &$mission){
+			
+				$mission['parameters'] = (!empty($mission['parameters'])) ? var_export($mission['parameters'], true) : $mission['parameters'];
+				
+			}
+			
 		}
 		
 		$this->_view_data += array(
@@ -75,7 +81,7 @@ class Mission_editor extends CI_Controller {
 			array(
 				'field'   => 'parameters',
 				'label'   => 'Mission Parameters',
-				'rules'   => 'required',
+				'rules'   => '',
 			),
 			array(
 				'field'   => 'default',
@@ -176,7 +182,7 @@ class Mission_editor extends CI_Controller {
 			array(
 				'field'   => 'parameters',
 				'label'   => 'Mission Parameters',
-				'rules'   => 'required',
+				'rules'   => '',
 			),
 			array(
 				'field'   => 'default',
@@ -219,7 +225,10 @@ class Mission_editor extends CI_Controller {
 		
 		//$missions['parameters'] returns as an array, so we need to export it to be shown
 		//codemirror takes the slashes that var_export has away, so we need to re add it back in
-		$mission_data['parameters'] = addslashes(var_export($mission_data['parameters'], true));
+		$mission_data['parameters'] = (!empty($mission_data['parameters'])) ? addslashes(var_export($mission_data['parameters'], true)) : $mission_data['parameters'];
+		
+		//This is because textarea weirdly removes any backslashes
+		$mission_data['description'] = addslashes($mission_data['description']);
 		
 		$this->_view_data += array(
 			'page_title'	=> 'Missions Update Editor PHP Bounce',

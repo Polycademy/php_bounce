@@ -14,7 +14,7 @@ class Mission_model extends CI_Model {
 	public function get_all_missions(){
 	
 		//need to sort by asc
-		$this->db->order_by('id', 'asc'); 
+		$this->db->order_by('mission_number', 'asc'); 
 		$query = $this->db->get('missions');
 		
 		$missions = false;
@@ -29,7 +29,7 @@ class Mission_model extends CI_Model {
 					'description'		=> $row->description,
 					'output'			=> $row->output,
 					'whitelist'			=> $row->whitelist,
-					'parameters'		=> $this->_parameter_decode($row->parameters),
+					'parameters'		=> (!empty($row->parameters)) ? $this->_parameter_decode($row->parameters) : $row->parameters,
 					'default'			=> $row->default,
 				);
 				
@@ -80,6 +80,22 @@ class Mission_model extends CI_Model {
 		
 	}
 	
+	//for encoding html between <code> </code>
+	//won't work if there is <code> inside <code></code>
+	private function _htmlcode_encode($data){
+	
+		$data = preg_replace_callback(
+			'/(<code[^>]*>)([\s\S]*?)(<\/code>)/m',
+			function($matches){
+				return $matches[1] . htmlspecialchars($matches[2], ENT_COMPAT|ENT_HTML5, 'UTF-8', false) . $matches[3];
+			},
+			$data
+		);
+		
+		return $data;
+		
+	}
+	
 	//this should be based on number
 	public function get_mission($num){
 	
@@ -90,13 +106,16 @@ class Mission_model extends CI_Model {
 		if($query->num_rows() > 0){
 		
 			$row = $query->row();
+			
+			#var_dump($row->description);
+			
 			$mission = array(
 				'id'				=> $row->id,
 				'mission_number'	=> $row->mission_number,
 				'title'				=> $row->title,
 				'description'		=> $row->description,
 				'output'			=> $row->output,
-				'parameters'		=> $this->_parameter_decode($row->parameters),
+				'parameters'		=> (!empty($row->parameters)) ? $this->_parameter_decode($row->parameters) : $row->parameters,
 				'whitelist'			=> $row->whitelist,
 				'default'			=> $row->default,
 			);
@@ -109,24 +128,26 @@ class Mission_model extends CI_Model {
 	
 	public function update_mission($num, $updated_mission){
 	
-		//Update the mission based on number	
-		$encoded_parameter = $this->_parameter_encode($updated_mission['parameters']);
-		
-		if($encoded_parameter){
-		
-			$updated_mission['parameters'] = $encoded_parameter;
+		if(!empty($updated_mission['parameters'])){
 			
-			$this->db->where('mission_number', $num);
-			$this->db->update('missions', $updated_mission);
-			
-			if($this->db->affected_rows() > 0){
-				return $this->db->affected_rows();
+			$updated_mission['parameters'] = $this->_parameter_encode($updated_mission['parameters']);
+			if(!$updated_mission['parameters']){
+				return false;
 			}
 			
 		}
 		
+		$updated_mission['description'] = $this->_htmlcode_encode($updated_mission['description']);
+		
+		$this->db->where('mission_number', $num);
+		$this->db->update('missions', $updated_mission);
+		
+		if($this->db->affected_rows() > 0){
+			return $this->db->affected_rows();
+		}
+		
 		return false;
-	
+		
 	}
 	
 	//need to add in delete mission
@@ -136,18 +157,21 @@ class Mission_model extends CI_Model {
 	
 	public function add_mission($new_mission){
 	
-		$encoded_parameter = $this->_parameter_encode($new_mission['parameters']);
-		
-		if($encoded_parameter){
-		
-			$new_mission['parameters'] = $encoded_parameter;
+		if(!empty($new_mission['parameters'])){
 			
-			$query = $this->db->insert('missions', $new_mission);
-			
-			if($query){
-				return $this->db->affected_rows();
+			$new_mission['parameters'] = $this->_parameter_encode($new_mission['parameters']);
+			if(!$new_mission['parameters']){
+				return false;
 			}
 			
+		}
+		
+		$new_mission['description'] = $this->_htmlcode_encode($new_mission['description']);
+		
+		$query = $this->db->insert('missions', $new_mission);
+		
+		if($query){
+			return $this->db->affected_rows();
 		}
 		
 		return false;

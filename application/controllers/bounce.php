@@ -63,7 +63,7 @@ class Bounce extends CI_Controller {
 		$mission_data = $this->Mission_model->get_mission($num);
 		$php_binary = $this->config->item('php_binary');
 		
-		//if $run_parameters is false, no point getting mission data
+		//if $run_parameters is true and there is no mission data, then no point running
 		if($run_parameters != 'false'){
 			if(empty($mission_data)){
 				$this->_ajax_execute_error('There is no data at mission #' . $num);
@@ -90,11 +90,17 @@ class Bounce extends CI_Controller {
 			$whitelist = explode(',', $mission_data['whitelist']);
 		}
 		
+		//if run parameters is false OR that we don't have any parameters, then we're not doing a mission check then
+		
+		#var_dump($mission_data['parameters']);
+		
 		$mission_parameters = false;
 		if($run_parameters != 'false'){
-			$options[] = 'parse';
-			$options[] = 'mission_check';
-			$mission_parameters = $mission_data['parameters'];
+			if(!empty($mission_data['parameters'])){
+				$options[] = 'parse';
+				$options[] = 'mission_check';
+				$mission_parameters = $mission_data['parameters'];
+			}
 		}
 		
 		$options[] = 'execute';
